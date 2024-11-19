@@ -1,0 +1,42 @@
+/* Фоновое изображение для всей страницы */
+body {
+    background-image: url("background_alliance.jpg"); /* Относительный путь к изображению */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Стили для логотипа */
+.navbar-brand img {
+    margin-right: 10px;
+    border-radius: 5px; /* Например, сделать углы логотипа слегка округлыми */
+}
+
+/* Общие стили остаются */
+.nav-link.active {
+    background-color: rgb(254, 255, 255);
+    border-radius: 5px;
+}
+
+
+/* Стиль для названия "Альянс" */
+.navbar-brand {
+    color: darkblue !important;
+    font-weight: bold;
+}
+
+/* Активная вкладка подсвечивается голубым */
+.nav-link.active {
+    background-color: #6d8bd5;
+    border-radius: 5px;
+}
+
+/* Общий стиль для вкладок */
+.nav-link {
+    color: black !important;
+}
+
+/* При наведении мыши на вкладки */
+.nav-link:hover {
+    color: darkblue !important;
+}
