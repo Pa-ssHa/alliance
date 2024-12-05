@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Новое объявление</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+
+<h1>Новое объявление</h1>
+
+<form th:method="POST" th:action="@{/realty/advertisementSale}" th:object="${newAdvertisementSale}">
+    <ul>
+        <li>
+            <label for="title">Введите название</label>
+            <input type="text" th:field="*{title}" id="title">
+            <br>
+            <label for="description">Введите описание</label>
+            <input type="text" th:field="*{description}" id="description">
+            <br>
+            <label for="price">Введите цену</label>
+            <input type="text" th:field="*{price}" id="price">
+        </li>
+    </ul>
+    <div>
+        <input type="submit" value="Создать">
+    </div>
+
+</form>
+
+<form th:method="GET" th:action="@{/realty}">
+    <input type="submit" value="Вернуться назад"/>
+</form>
+
+</body>
+</html>

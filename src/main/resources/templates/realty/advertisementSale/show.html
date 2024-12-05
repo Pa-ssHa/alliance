@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Объявление</title>
+
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+
+<!--<th:block th:replace="navbar"></th:block>-->
+
+<h2 th:text="${oneAdvertisementSale.title}"></h2>
+
+<h4 th:text="${oneAdvertisementSale.description}"></h4>
+
+<h3 th:text="${oneAdvertisementSale.price}"></h3>
+
+
+<form th:method="GET" th:action="@{/realty/advertisementSale/{id}/edit(id=${oneAdvertisementSale.getId()})}">
+    <input type="submit" value="Редактировать объявление">
+</form>
+
+<form th:method="POST" th:action="@{/realty/advertisementSale/{id}(id=${oneAdvertisementSale.getId()})}">
+    <input type="hidden" name="_method" value="DELETE" >
+    <input type="submit" value="Удалить объявление"/>
+</form>
+
+
+</body>
+</html>

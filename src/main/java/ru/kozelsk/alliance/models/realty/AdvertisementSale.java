@@ -3,8 +3,8 @@ package ru.kozelsk.alliance.models.realty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "advertisement")
-public class Advertisement {
+@Table(name = "advertisement_sale")
+public class AdvertisementSale {
 
     @Id
     @Column(name = "id")
@@ -20,9 +20,9 @@ public class Advertisement {
     @Column(name = "price")
     private double price;
 
-    public Advertisement() {}
+    public AdvertisementSale() {}
 
-    public Advertisement(String title, String description, double price) {
+    public AdvertisementSale(String title, String description, double price) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -62,7 +62,7 @@ public class Advertisement {
 
     @Override
     public String toString() {
-        return "Advertisement{" +
+        return "AdvertisementSale{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
