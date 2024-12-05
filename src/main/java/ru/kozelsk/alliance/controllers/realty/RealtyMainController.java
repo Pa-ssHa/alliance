@@ -7,35 +7,38 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.realty.AdvertisementSale;
+import ru.kozelsk.alliance.services.realty.AdvertisementRentService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleService;
 import ru.kozelsk.alliance.services.realty.FeedbackService;
 
 @Controller
 @RequestMapping("/realty")
-public class RealtyController {
+public class RealtyMainController {
 
     private final AdvertisementSaleService advertisementSaleService;
+    private final AdvertisementRentService advertisementRentService;
     private final FeedbackService feedbackService;
 
     @Autowired
-    public RealtyController(AdvertisementSaleService advertisementSaleService, FeedbackService feedbackService) {
+    public RealtyMainController(AdvertisementSaleService advertisementSaleService, FeedbackService feedbackService, AdvertisementRentService advertisementRentService) {
         this.advertisementSaleService = advertisementSaleService;
         this.feedbackService = feedbackService;
+        this.advertisementRentService = advertisementRentService;
     }
 
     @GetMapping()
     public String allAdvertisementSale(Model model) {
         model.addAttribute("advertisementsSale", advertisementSaleService.findAll());
+        model.addAttribute("advertisementsRent", advertisementRentService.findAll());
         model.addAttribute("feedbacksSale", feedbackService.findAll());
         return "realty/main";
     }
 
+    /*
     @GetMapping("/advertisementSale/{id}")
     public String showAdvertisementSale(@PathVariable("id") int id, Model model) {
 
         model.addAttribute("oneAdvertisementSale", advertisementSaleService.findOne(id));
-
-
         return "realty/advertisementSale/show";
     }
 
@@ -75,7 +78,7 @@ public class RealtyController {
     public String deleteAdvertisementSale(@PathVariable("id") int id) {
         advertisementSaleService.delete(id);
         return "redirect:/realty";
-    }
+    }*/
 
 
 }

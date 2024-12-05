@@ -40,10 +40,10 @@
 <div>
     <h2>Аренда</h2>
     <div>
-        <ul th:each="advertisement: ${advertisementsSale}">
+        <ul th:each="advertisement: ${advertisementsRent}">
             <li>
                 <div>
-                    <a th:href="@{/realty/advertisementSale/{id}(id=${advertisement.getId()})}"
+                    <a th:href="@{/realty/advertisementRent/{id}(id=${advertisement.getId()})}"
                        th:text="${advertisement.title + ', '+ advertisement.description+ ', '+ advertisement.price}">
                         Объявление </a>
                 </div>
@@ -51,7 +51,7 @@
         </ul>
     </div>
 
-    <form th:method="GET" th:action="@{/realty/advertisementSale/new}">
+    <form th:method="GET" th:action="@{/realty/advertisementRent/new}">
         <input type="submit" value="Создать объявление">
     </form>
 </div>

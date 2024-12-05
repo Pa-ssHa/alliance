@@ -10,7 +10,7 @@
 
 <h1>Новое объявление</h1>
 
-<form th:method="POST" th:action="@{/realty/advertisementSale}" th:object="${newAdvertisementSale}">
+<form th:method="POST" th:action="@{/realty/advertisementRent}" th:object="${newAdvertisementRent}">
     <ul>
         <li>
             <label for="title">Введите название</label>
@@ -30,7 +30,7 @@
 </form>
 
 <form th:method="GET" th:action="@{/realty}">
-    <input type="submit" value="Вернуться на главную"/>
+    <input type="submit" value="Вернуться назад"/>
 </form>
 
 </body>
