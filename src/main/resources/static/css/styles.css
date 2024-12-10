@@ -3,9 +3,16 @@ body {
     background-color: #e6f7fa;
 }
 
+.nav-link.active {
+    background-color: lightblue;
+    border-radius: 5px;
+}
 
-
-
+.navbar-brand img {
+    width: 80px; /* Увеличьте при необходимости */
+    height: auto; /* Сохраняет соотношение сторон */
+    margin-right: 10px;
+}
 
 
 

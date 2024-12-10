@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "feedback_realty")
-public class Feedback_realty {
+public class FeedbackRealty {
 
     @Id
     @Column(name = "id")
@@ -21,9 +21,9 @@ public class Feedback_realty {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfPlacement;
 
-    public Feedback_realty(){}
+    public FeedbackRealty(){}
 
-    public Feedback_realty(String text, Date dateOfPlacement) {
+    public FeedbackRealty(String text, Date dateOfPlacement) {
         this.text = text;
         this.dateOfPlacement = dateOfPlacement;
     }
