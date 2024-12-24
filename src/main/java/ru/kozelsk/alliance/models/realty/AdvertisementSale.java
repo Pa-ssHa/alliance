@@ -2,6 +2,9 @@ package ru.kozelsk.alliance.models.realty;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "advertisement_sale")
 public class AdvertisementSale {
@@ -19,6 +22,9 @@ public class AdvertisementSale {
 
     @Column(name = "price")
     private double price;
+
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AdvertisementSaleImage> images;
 
     public AdvertisementSale() {}
 
@@ -68,5 +74,13 @@ public class AdvertisementSale {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    public List<AdvertisementSaleImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<AdvertisementSaleImage> images) {
+        this.images = images;
     }
 }

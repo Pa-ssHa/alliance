@@ -1,12 +1,20 @@
 package ru.kozelsk.alliance.services.realty;
 
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ru.kozelsk.alliance.models.realty.AdvertisementSale;
+import ru.kozelsk.alliance.models.realty.AdvertisementSaleImage;
+import ru.kozelsk.alliance.repositories.realty.AdvertisementSaleImageRepository;
 import ru.kozelsk.alliance.repositories.realty.AdvertisementSaleRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +23,14 @@ import java.util.Optional;
 public class AdvertisementSaleService {
 
     private final AdvertisementSaleRepository advertisementRepository;
+    private final AdvertisementSaleImageRepository advertisementImageRepository;
+
+    private static final String IMAGE_DIR = "M:/uploads/advertisementSale";
 
     @Autowired
-    public AdvertisementSaleService(AdvertisementSaleRepository advertisementRepository) {
+    public AdvertisementSaleService(AdvertisementSaleRepository advertisementRepository, AdvertisementSaleImageRepository advertisementImageRepository) {
         this.advertisementRepository = advertisementRepository;
+        this.advertisementImageRepository = advertisementImageRepository;
     }
 
     public List<AdvertisementSale> findAll(){
@@ -46,5 +58,64 @@ public class AdvertisementSaleService {
         advertisementRepository.save(upAdvertisement);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////IMAGE
 
+    @PostConstruct
+    public void init(){
+        File directory = new File(IMAGE_DIR);
+        if(!directory.exists()){
+            directory.mkdir();
+        }
+    }
+
+    /*@Transactional
+    public void saveAdvertisementWithImage(AdvertisementSale advertisementSale, MultipartFile[] images) throws IOException {
+
+        AdvertisementSale savedAdvertisement = advertisementRepository.save(advertisementSale);
+
+        List<AdvertisementSaleImage> savedImages = new ArrayList<>();
+        for (MultipartFile file : images) {
+            if(!file.isEmpty()){
+                String fileName = file.getOriginalFilename();
+                File targetFile = new File(IMAGE_DIR + fileName);
+                file.transferTo(targetFile);
+
+                AdvertisementSaleImage savedImage = new AdvertisementSaleImage();
+                savedImage.setImagePath(targetFile.getAbsolutePath());
+                savedImage.setFilename(fileName);
+                savedImage.setAdvertisement(savedAdvertisement);
+
+                savedImages.add(savedImage);
+                advertisementImageRepository.save(savedImage);
+            }
+        }
+        savedAdvertisement.setImages(savedImages);
+        advertisementRepository.save(savedAdvertisement);
+    }*/
+
+    @Transactional
+    public void saveAdvertisementWithImage(AdvertisementSale advertisementSale, MultipartFile[] images) throws IOException {
+
+        AdvertisementSale savedAdvertisement = advertisementRepository.save(advertisementSale);
+
+        List<AdvertisementSaleImage> savedImages = new ArrayList<>();
+        for (MultipartFile file : images) {
+            if(!file.isEmpty()){
+                String fileName = file.getOriginalFilename();
+                File targetFile = new File(IMAGE_DIR + fileName);
+                file.transferTo(targetFile);
+
+                AdvertisementSaleImage savedImage = new AdvertisementSaleImage();
+                savedImage.setImagePath(targetFile.getAbsolutePath());
+                savedImage.setFilename(fileName);
+                savedImage.setAdvertisement(savedAdvertisement);
+
+                savedImages.add(savedImage);
+                advertisementImageRepository.save(savedImage);
+            }
+        }
+        savedAdvertisement.setImages(savedImages);
+        advertisementRepository.save(savedAdvertisement);
+    }
 }

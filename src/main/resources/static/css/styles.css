@@ -1,100 +1,46 @@
-
+/* ===== Общий фон страницы ===== */
 body {
-    background-color: #e6f7fa;
+    background-color: #e6f7fa; /* Светло-голубой фон для всей страницы */
 }
 
-.nav-link.active {
-    background-color: lightblue;
-    border-radius: 5px;
-}
-
-.navbar-brand img {
-    width: 80px; /* Увеличьте при необходимости */
-    height: auto; /* Сохраняет соотношение сторон */
-    margin-right: 10px;
-}
-
-
-
-
-
-
-/*!* Фоновое изображение для всей страницы *!
-body {
-    background-image: url("background_alliance.jpg"); !* Относительный путь к изображению *!
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    font-family: 'Arial', sans-serif;
-}
-
-!* Стили для логотипа *!
-.navbar-brand img {
-    margin-right: 10px;
-    border-radius: 5px; !* Например, сделать углы логотипа слегка округлыми *!
-}
-
-!* Общие стили остаются *!
-.nav-link.active {
-    background-color: rgb(254, 255, 255);
-    border-radius: 5px;
-}
-
-
-!* Стиль для названия "Альянс" *!
-.navbar-brand {
-    color: darkblue !important;
-    font-weight: bold;
-}
-
-!* Активная вкладка подсвечивается голубым *!
-.nav-link.active {
-    background-color: #6d8bd5;
-    border-radius: 5px;
-}
-
-!* Общий стиль для вкладок *!
-.nav-link {
-    color: black !important;
-}
-
-!* При наведении мыши на вкладки *!
-.nav-link:hover {
-    color: darkblue !important;
-}
-
-!* Центрирование и отступы *!
+/* ===== Контейнеры для секций ===== */
 .container {
-    max-width: 1200px; !* Ограничение ширины *!
-    margin: 0 auto; !* Центрирование *!
-    padding: 0 15px; !* Отступы от краёв *!
+    padding-left: 100px; /* Отступы слева */
+    padding-right: 100px; /* Отступы справа */
 }
 
-!* Стиль заголовков *!
-h1, h2 {
-    color: #333;
-    font-weight: bold;
+/* ===== Стили активной ссылки навигационной панели ===== */
+.nav-link.active {
+    background-color: lightblue; /* Светло-голубой фон для активной ссылки */
+    border-radius: 5px; /* Скруглённые углы */
 }
 
-!* Кнопки навигации *!
-.nav-link {
-    font-size: 1.2rem;
-    transition: all 0.3s ease-in-out;
-}
-.nav-link:hover {
-    background-color: #ffffff;
-    color: #6d8bd5 !important;
-    border-radius: 5px;
+/* ===== Стили логотипа в навигационной панели ===== */
+.navbar-brand img {
+    width: 80px; /* Устанавливаем ширину логотипа */
+    height: auto; /* Сохраняем пропорции изображения */
+    margin-right: 10px; /* Отступ справа от логотипа */
 }
 
-!* Карточки *!
+/* ===== Стили карточек объявлений ===== */
 .card {
-    border-radius: 10px;
-    overflow: hidden;
-    text-align: center; !* Центрируем текст внутри карточек *!
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Лёгкая тень вокруг карточки */
+    border-radius: 10px; /* Скруглённые углы */
 }
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
-}*/
 
+/* ===== Заголовок карточки ===== */
+.card-title {
+    font-size: 1.2rem; /* Увеличенный размер текста для заголовка */
+    font-weight: bold; /* Жирный шрифт */
+}
+
+/* ===== Текст внутри карточки ===== */
+.card-text {
+    font-size: 1rem; /* Размер текста для описания и цены */
+    margin-bottom: 1rem; /* Отступ снизу текста */
+}
+
+/* ===== Кнопки внутри карточек ===== */
+.btn {
+    width: 100%; /* Кнопка занимает всю ширину карточки */
+}
