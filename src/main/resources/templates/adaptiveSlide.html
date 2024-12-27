@@ -1,0 +1,27 @@
+<script>
+    // Инициализация карусели
+    document.addEventListener('DOMContentLoaded', function () {
+        const swipers = document.querySelectorAll('.swiper');
+        swipers.forEach(swiper => {
+            new Swiper(swiper, {
+                loop: true, // Бесконечная прокрутка
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                breakpoints: {
+                    // Настройки для разных размеров экранов
+                    320: {
+                        slidesPerView: 1, // 1 элемент на маленьких экранах
+                    },
+                    768: {
+                        slidesPerView: 2, // 2 элемента на средних экранах
+                    },
+                    992: {
+                        slidesPerView: 3, // 3 элемента на больших экранах
+                    }
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,15 @@
+<script>
+    // Сохраняем позицию прокрутки перед переходом на другую страницу
+    window.addEventListener('beforeunload', function () {
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+    });
+
+    // Восстанавливаем позицию прокрутки после загрузки страницы
+    window.addEventListener('load', function () {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+            sessionStorage.removeItem('scrollPosition');
+        }
+    });
+</script>

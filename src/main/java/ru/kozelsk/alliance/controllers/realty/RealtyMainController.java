@@ -5,9 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.kozelsk.alliance.models.realty.AdvertisementRent;
+import ru.kozelsk.alliance.models.realty.AdvertisementSale;
 import ru.kozelsk.alliance.services.realty.AdvertisementRentService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleService;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
+import ru.kozelsk.alliance.utils.PartitionOfList;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/realty")
@@ -26,6 +31,7 @@ public class RealtyMainController {
 
     @GetMapping()
     public String allAdvertisementSale(Model model) {
+
         model.addAttribute("advertisementsSale", advertisementSaleService.findAll());
         model.addAttribute("advertisementsRent", advertisementRentService.findAll());
         model.addAttribute("feedbacksRealty", feedbackRealtyService.findAll());

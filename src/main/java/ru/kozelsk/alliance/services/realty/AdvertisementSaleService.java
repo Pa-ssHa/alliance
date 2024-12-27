@@ -23,14 +23,12 @@ import java.util.Optional;
 public class AdvertisementSaleService {
 
     private final AdvertisementSaleRepository advertisementRepository;
-    private final AdvertisementSaleImageRepository advertisementImageRepository;
 
     private static final String IMAGE_DIR = "M:/uploads/advertisementSale";
 
     @Autowired
-    public AdvertisementSaleService(AdvertisementSaleRepository advertisementRepository, AdvertisementSaleImageRepository advertisementImageRepository) {
+    public AdvertisementSaleService(AdvertisementSaleRepository advertisementRepository) {
         this.advertisementRepository = advertisementRepository;
-        this.advertisementImageRepository = advertisementImageRepository;
     }
 
     public List<AdvertisementSale> findAll(){
@@ -61,13 +59,13 @@ public class AdvertisementSaleService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////IMAGE
 
-    @PostConstruct
+    /*@PostConstruct
     public void init(){
         File directory = new File(IMAGE_DIR);
         if(!directory.exists()){
             directory.mkdir();
         }
-    }
+    }*/
 
     /*@Transactional
     public void saveAdvertisementWithImage(AdvertisementSale advertisementSale, MultipartFile[] images) throws IOException {
@@ -94,28 +92,8 @@ public class AdvertisementSaleService {
         advertisementRepository.save(savedAdvertisement);
     }*/
 
-    @Transactional
-    public void saveAdvertisementWithImage(AdvertisementSale advertisementSale, MultipartFile[] images) throws IOException {
+    /*public void deleteImage(int id){
+        advertisementImageRepository.deleteById(id);
+    }*/
 
-        AdvertisementSale savedAdvertisement = advertisementRepository.save(advertisementSale);
-
-        List<AdvertisementSaleImage> savedImages = new ArrayList<>();
-        for (MultipartFile file : images) {
-            if(!file.isEmpty()){
-                String fileName = file.getOriginalFilename();
-                File targetFile = new File(IMAGE_DIR + fileName);
-                file.transferTo(targetFile);
-
-                AdvertisementSaleImage savedImage = new AdvertisementSaleImage();
-                savedImage.setImagePath(targetFile.getAbsolutePath());
-                savedImage.setFilename(fileName);
-                savedImage.setAdvertisement(savedAdvertisement);
-
-                savedImages.add(savedImage);
-                advertisementImageRepository.save(savedImage);
-            }
-        }
-        savedAdvertisement.setImages(savedImages);
-        advertisementRepository.save(savedAdvertisement);
-    }
 }

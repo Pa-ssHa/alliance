@@ -19,12 +19,16 @@ public class AdvertisementSaleImage {
     @Column(name = "image_path")
     private String imagePath;
 
+    @Column(name = "is_main")
+    private boolean isMain;
+
     public AdvertisementSaleImage() {}
 
-    public AdvertisementSaleImage(AdvertisementSale advertisement, String imagePath, String filename) {
+    public AdvertisementSaleImage(AdvertisementSale advertisement, String imagePath, String filename, boolean isMain) {
         this.filename = filename;
         this.advertisement = advertisement;
         this.imagePath = imagePath;
+        this.isMain = false;
     }
 
     public String getFilename() {
@@ -57,6 +61,14 @@ public class AdvertisementSaleImage {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public boolean isMain() {
+        return isMain;
+    }
+
+    public void setMain(boolean main) {
+        isMain = main;
     }
 
     @Override

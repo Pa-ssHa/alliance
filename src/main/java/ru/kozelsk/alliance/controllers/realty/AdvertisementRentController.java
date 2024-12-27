@@ -32,7 +32,6 @@ public class AdvertisementRentController {
     public String newAdvertisementSale(@ModelAttribute("newAdvertisementRent") AdvertisementRent advertisementRent) {
         return "realty/advertisementRent/new";
     }
-
     @PostMapping()
     public String createAdvertisementSale(@ModelAttribute("newAdvertisementRent") AdvertisementRent advertisementRent,
                                           BindingResult bindingResult) {
@@ -41,6 +40,9 @@ public class AdvertisementRentController {
         advertisementRentService.save(advertisementRent);
         return "redirect:/realty";
     }
+
+
+
 
     @GetMapping("/{id}/edit")
     public String editAdvertisementRent(@PathVariable("id") int id, Model model) {
@@ -58,6 +60,9 @@ public class AdvertisementRentController {
         return "redirect:/realty/advertisementRent/"+id;
 
     }
+
+
+
 
     @DeleteMapping("/{id}")
     public String deleteAdvertisementRent(@PathVariable("id") int id) {
