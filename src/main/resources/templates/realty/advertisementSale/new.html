@@ -13,30 +13,32 @@
 
     <h1>Новое объявление</h1>
 
-    <form th:method="POST" th:action="@{/realty/advertisementSale}" th:object="${newAdvertisementSale}"
-          enctype="multipart/form-data">
-        <ul>
-            <li>
-                <label for="title">Введите название</label>
-                <input type="text" th:field="*{title}" id="title" class="form-control">
-                <br>
-                <label for="description">Введите описание</label>
-                <input type="text" th:field="*{description}" id="description" class="form-control">
-                <br>
-                <label for="price">Введите цену</label>
-                <input type="number" step="0.01" th:field="*{price}" id="price" class="form-control">
-                <br>
-                <label for="images">Изображения:</label>
-                <input type="file" th:field="*{images}" id="images" multiple accept="image/*" class="form-control">
-                <br>
-                <label>Выберите главное изображение:</label>
-                <div id="imagePreview"></div>
-            </li>
-        </ul>
-        <div>
-            <input type="submit" value="Создать" class="btn btn-success">
-        </div>
-    </form>
+    <div class="card p-4 mb-4">
+        <form th:method="POST" th:action="@{/realty/advertisementSale}" th:object="${newAdvertisementSale}"
+              enctype="multipart/form-data">
+            <ul>
+                <li>
+                    <label for="title">Введите название</label>
+                    <input type="text" th:field="*{title}" id="title" class="form-control">
+                    <br>
+                    <label for="description">Введите описание</label>
+                    <input type="text" th:field="*{description}" id="description" class="form-control">
+                    <br>
+                    <label for="price">Введите цену</label>
+                    <input type="number" step="0.01" th:field="*{price}" id="price" class="form-control">
+                    <br>
+                    <label for="images">Изображения:</label>
+                    <input type="file" th:field="*{images}" id="images" multiple accept="image/*" class="form-control">
+                    <br>
+                    <label>Выберите главное изображение:</label>
+                    <div id="imagePreview"></div>
+                </li>
+            </ul>
+            <div>
+                <input type="submit" value="Создать" class="btn btn-success">
+            </div>
+        </form>
+    </div>
 
     <form th:method="GET" th:action="@{/realty}">
         <input type="submit" value="Вернуться на главную" class="btn btn-secondary"/>
@@ -77,8 +79,9 @@
             }
         });
     </script>
-
-
 </div>
+
+<div th:insert="~{savingPosition.html}"></div>
+
 </body>
 </html>

@@ -1,44 +1,23 @@
 package ru.kozelsk.alliance.models.realty;
 
-import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Entity
-@Table(name = "advertisement_rent")
-public class AdvertisementRent {
+public class AdvertisementRentForm {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "title")
     private String title;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "price")
     private double price;
+    private List<MultipartFile> images;
 
-    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AdvertisementRentImage> images;
+    public AdvertisementRentForm() {}
 
-    public AdvertisementRent() {}
-
-    public AdvertisementRent(String title, String description, double price) {
+    public AdvertisementRentForm(String title, String description, double price, List<MultipartFile> images) {
         this.title = title;
         this.description = description;
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.images = images;
     }
 
     public String getTitle() {
@@ -65,21 +44,21 @@ public class AdvertisementRent {
         this.price = price;
     }
 
-    public List<AdvertisementRentImage> getImages() {
+    public List<MultipartFile> getImages() {
         return images;
     }
 
-    public void setImages(List<AdvertisementRentImage> images) {
+    public void setImages(List<MultipartFile> images) {
         this.images = images;
     }
 
     @Override
     public String toString() {
-        return "AdvertisementRent{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+        return "AdvertisementRentForm{" +
+                "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
+                ", images=" + images +
                 '}';
     }
 }
