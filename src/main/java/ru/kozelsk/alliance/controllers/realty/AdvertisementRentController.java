@@ -1,6 +1,7 @@
 package ru.kozelsk.alliance.controllers.realty;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,6 +44,7 @@ public class AdvertisementRentController {
 
 
     @GetMapping("/new")
+    @PreAuthorize("isAuthenticated()")
     public String newAdvertisementRent(Model model) {
         model.addAttribute("newAdvertisementRent", new AdvertisementRentForm());
         return "realty/advertisementRent/new";
@@ -85,6 +87,7 @@ public class AdvertisementRentController {
 
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String editAdvertisementSale(@PathVariable("id") int id, Model model) {
         AdvertisementRent advertisementRent = advertisementRentService.findOne(id);
         advertisementRent.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
@@ -149,6 +152,7 @@ public class AdvertisementRentController {
 
 //      Удаление объявления
     @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String deleteAdvertisementSale(@PathVariable("id") int id) {
         AdvertisementRent advertisementRent = advertisementRentService.findOne(id);
         for (AdvertisementRentImage image : advertisementRent.getImages()) {
