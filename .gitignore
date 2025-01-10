@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/application.properties
+src/main/resources/alliance-2490a-firebase-adminsdk-c4hni-df9687e97c.json
 uploads/
 
 
