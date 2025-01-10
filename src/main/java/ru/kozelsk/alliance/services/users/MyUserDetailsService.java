@@ -38,6 +38,14 @@ public class MyUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> findByPhone(String phone) {
+        return userRepository.findByPhone(phone);
+    }
+
     public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -45,5 +53,9 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public boolean checkPassword(String rawPassword, String encoderPassword) {
         return passwordEncoder.matches(rawPassword, encoderPassword);
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 }

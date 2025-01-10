@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    private String verificationCode;
+    private boolean phoneVerified;
+
     public User(String username, String phone, String password,
                 boolean active, Set<Role> roles, String typeService) {
         this.typeService = typeService;
@@ -64,33 +67,6 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // аккаунт не истек
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true; // аккаунт не заблокирован
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true; //учетные данные не истекли
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isActive(); //аккаунт активен
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toList());
     }
 
     public void setUsername(String username) {
@@ -137,6 +113,51 @@ public class User implements UserDetails {
     public void setTypeService(String typeService) {
         this.typeService = typeService;
     }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public boolean isPhoneVerified() {
+        return phoneVerified;
+    }
+
+    public void setPhoneVerified(boolean phoneVerified) {
+        this.phoneVerified = phoneVerified;
+    }
+
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // аккаунт не истек
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // аккаунт не заблокирован
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; //учетные данные не истекли
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive(); //аккаунт активен
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public String toString() {
