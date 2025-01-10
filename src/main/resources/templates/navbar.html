@@ -1,21 +1,17 @@
-<!--
-<nav>
-    <ul>
-        <li><a th:href="@{/realty}">Недвижимость</a></li>
-        <li><a th:href="@{/insurance}">Страховка</a></li>
-        <li><a th:href="@{/excursions}">Экскурсии</a></li>
-        <li><a th:href="@{/cars}">Машины</a></li>
-        <li><a th:href="@{/courses}">Курсовые</a></li>
-    </ul>
-</nav>-->
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="container-fluid">
-        <!-- Замена текста "Альянс" на иконку -->
-        <a class="navbar-brand" href="#">
+        <!-- Логотип -->
+        <a class="navbar-brand" href="/">
             <img src="/img/logo_alliance.png" alt="Logo" style="width: 250px; height: 80px;">
         </a>
-        <div class="navbar-collapse">
+
+        <!-- Кнопка для мобильного меню -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Основное меню -->
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/realty">Недвижимость</a>
@@ -31,6 +27,24 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Машины</a>
+                </li>
+            </ul>
+
+            <!-- Кнопки входа, регистрации и выхода -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">Войти</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/registration}">Регистрация</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link nav-link">Выйти</button>
+                    </form>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <span class="nav-link username">Добро пожаловать, <span sec:authentication="name"></span>!</span>
                 </li>
             </ul>
         </div>
@@ -56,3 +70,18 @@
         });
     });
 </script>
+
+<style>
+    /* Стили для имени пользователя */
+    .username {
+        color: #333 !important;
+        cursor: default;
+        padding: 8px 16px;
+        margin: 0 5px;
+        pointer-events: none; /* Отключаем клики */
+    }
+
+    .username:hover {
+        background: none !important;
+    }
+</style>

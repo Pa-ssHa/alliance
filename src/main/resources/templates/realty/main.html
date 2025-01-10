@@ -4,17 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Недвижимость</title>
+    <!-- Подключаем Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <!-- Подключение Swiper CSS -->
+    <!-- Подключаем Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Подключаем AOS для анимаций -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Подключаем кастомные стили -->
     <link rel="stylesheet" href="/css/styles.css">
     <style>
-        /* Стили для навигационной панели (navbar) */
-        .navbar-custom {
-            border-bottom: 2px solid #e0e0e0; /* Граница снизу */
+        /* Общие стили */
+        body {
+            background-color: #e6f7fa !important; /* Убедитесь, что фон остается голубым */
+            font-family: 'Arial', sans-serif;
         }
 
-        /* Стили для карусели */
+        /* Навигационная панель */
+        .navbar-custom {
+            border-bottom: 2px solid #e0e0e0;
+            background-color: white;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #333 !important;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #007bff !important;
+        }
+
+        /* Секция агентства */
+        .agency-section {
+            background-color: white;
+            padding: 80px 0;
+        }
+
+        .agency-section img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .agency-section h2 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .agency-section p {
+            font-size: 1.25rem;
+            color: #666;
+        }
+
+        /* Секция объявлений */
         .carousel-section {
             background-color: white;
             border-radius: 12px;
@@ -23,13 +68,13 @@
             margin: 20px 0;
         }
 
-        /* Стили для карточек объявлений */
         .card {
             border: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
-            margin: 10px; /* Отступ между карточками */
+            margin: 10px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -46,6 +91,12 @@
 
         .btn-custom {
             margin-top: 10px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
         }
 
         /* Стили для Swiper */
@@ -77,36 +128,71 @@
             font-size: 20px;
         }
 
-        /* Стили для секции агентства */
-        .agency-section {
-            background-color: #f8f9fa;
-            padding: 50px 0;
-            text-align: center;
-        }
-
-        .agency-section img {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .agency-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .agency-section p {
-            font-size: 1.25rem;
-            color: #666;
-        }
-
-        /* Стили для отзывов */
+        /* Секция отзывов */
         .reviews-section {
-            padding: 50px 0;
+            background-color: white;
+            padding: 80px 0;
+        }
+
+        .reviews-section h2 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 40px;
         }
 
         .reviews-section .card {
             margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .reviews-section .card-body {
+            padding: 20px;
+        }
+
+        .reviews-section .card-text {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .reviews-section .text-muted {
+            font-size: 0.9rem;
+        }
+
+        /* Футер */
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #f8f9fa;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .agency-section h2 {
+                font-size: 2rem;
+            }
+            .agency-section p {
+                font-size: 1rem;
+            }
+            .reviews-section h2 {
+                font-size: 2rem;
+            }
+            .card {
+                margin: 5px;
+            }
+            .fixed-size-image {
+                height: 150px;
+            }
         }
     </style>
 </head>
@@ -115,11 +201,11 @@
 <!-- Навигационная панель (navbar) -->
 <div th:insert="~{navbar.html}" class="navbar-custom"></div>
 
-<!--контактное окно-->
+<!-- Контактное окно -->
 <div th:insert="~{contact-window.html}" class="navbar-custom"></div>
 
 <!-- Секция агентства -->
-<section class="agency-section">
+<section class="agency-section" data-aos="fade-up">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
@@ -137,33 +223,19 @@
     </div>
 </section>
 
-<div sec:authorize="isAuthenticated()">
-    <p>Добро пожаловать, <span sec:authentication="name"></span>!</p>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Выйти</button>
-    </form>
-</div>
-<div sec:authorize="!isAuthenticated()">
-    <a th:href="@{/login}">Войти</a> | <a th:href="@{/registration}">Регистрация</a>
-</div>
-
-
 <!-- Секция объявлений о продаже -->
 <div class="container py-4">
-    <h2>Продажа</h2>
-    <!-- Карусель для объявлений -->
+    <h2 class="text-center mb-4">Продажа</h2>
     <div class="carousel-section">
         <div class="swiper">
             <div class="swiper-wrapper">
-                <!-- Отдельные объявления -->
                 <div class="swiper-slide" th:each="advertisement : ${advertisementsSale}">
-                    <div class="card">
+                    <div class="card" th:onclick="'window.location.href=\'' + @{/realty/advertisementSale/{id}(id=${advertisement.getId()})} + '\''">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${advertisement.title}">Название</h5>
                             <p class="card-text fw-bold" th:text="${advertisement.price + ' руб.'}">Цена</p>
                             <a th:href="@{/realty/advertisementSale/{id}(id=${advertisement.getId()})}"
                                class="btn btn-primary btn-custom">Подробнее</a>
-                            <!-- Отображение только главного изображения -->
                             <div th:each="image : ${advertisement.images}" th:if="${image.main}" class="img-thumbnail">
                                 <img th:src="@{/images/advertisementSale/{filename}(filename=${image.imagePath})}"
                                      class="fixed-size-image"
@@ -178,33 +250,30 @@
                     </div>
                 </div>
             </div>
-            <!-- Кнопки управления каруселью -->
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
         </div>
     </div>
-    <!-- Кнопка "Создать объявление" -->
-    <form th:method="GET" th:action="@{/realty/advertisementSale/new}" class="mt-3">
-        <input type="submit" value="Создать объявление" class="btn btn-success">
-    </form>
+    <div class="text-center mt-3">
+        <form th:method="GET" th:action="@{/realty/advertisementSale/new}">
+            <button type="submit" class="btn btn-success">Создать объявление</button>
+        </form>
+    </div>
 </div>
 
 <!-- Секция объявлений об аренде -->
 <div class="container py-4">
-    <h2>Аренда</h2>
-    <!-- Карусель для объявлений -->
+    <h2 class="text-center mb-4">Аренда</h2>
     <div class="carousel-section">
         <div class="swiper">
             <div class="swiper-wrapper">
-                <!-- Отдельные объявления -->
                 <div class="swiper-slide" th:each="advertisement : ${advertisementsRent}">
-                    <div class="card">
+                    <div class="card" th:onclick="'window.location.href=\'' + @{/realty/advertisementRent/{id}(id=${advertisement.getId()})} + '\''">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${advertisement.title}">Название</h5>
                             <p class="card-text fw-bold" th:text="${advertisement.price + ' руб.'}">Цена</p>
                             <a th:href="@{/realty/advertisementRent/{id}(id=${advertisement.getId()})}"
                                class="btn btn-primary btn-custom">Подробнее</a>
-                            <!-- Отображение только главного изображения -->
                             <div th:each="image : ${advertisement.images}" th:if="${image.main}" class="img-thumbnail">
                                 <img th:src="@{/images/advertisementRent/{filename}(filename=${image.imagePath})}"
                                      class="fixed-size-image"
@@ -219,21 +288,24 @@
                     </div>
                 </div>
             </div>
-            <!-- Кнопки управления каруселью -->
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
         </div>
     </div>
-    <!-- Кнопка "Создать объявление" -->
-    <form th:method="GET" th:action="@{/realty/advertisementRent/new}" class="mt-3">
-        <input type="submit" value="Создать объявление" class="btn btn-success">
-    </form>
+    
+    <div class="text-center mt-3">
+        <form th:method="GET" th:action="@{/realty/advertisementRent/new}">
+            <button type="submit" class="btn btn-success">Создать объявление</button>
+        </form>
+    </div>
 </div>
 
+
+
 <!-- Секция отзывов -->
-<section class="reviews-section">
+<section class="reviews-section" data-aos="fade-up">
     <div class="container">
-        <h2>Отзывы наших клиентов</h2>
+        <h2 class="text-center mb-4">Отзывы наших клиентов</h2>
         <div class="row">
             <div class="col-md-4" th:each="feedback : ${feedbacksRealty}">
                 <div class="card">
@@ -244,19 +316,37 @@
                 </div>
             </div>
         </div>
-        <!-- Кнопка "Добавить отзыв" -->
-        <form th:method="GET" th:action="@{/realty/feedback/new}" class="mt-3">
-            <input type="submit" value="Добавить отзыв" class="btn btn-primary">
-        </form>
+        <div class="text-center mt-3">
+            <form th:method="GET" th:action="@{/realty/feedback/new}">
+                <button type="submit" class="btn btn-primary">Добавить отзыв</button>
+            </form>
+        </div>
     </div>
 </section>
+
+<!-- Футер -->
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Агентство недвижимости. Все права защищены.</p>
+        <p>
+            <a href="#">Политика конфиденциальности</a> |
+            <a href="#">Условия использования</a>
+        </p>
+    </div>
+</footer>
 
 <!-- Подключение Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Подключение Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
+<!-- Подключение AOS JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
+    AOS.init({
+        duration: 1000,
+        once: true,
+    });
+
     // Инициализация Swiper
     const swiper = new Swiper('.swiper', {
         loop: true,
@@ -278,11 +368,11 @@
             },
         },
     });
+
+    // Инициализация всплывающих подсказок
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 </script>
-
-<div th:insert="~{adaptiveSlide.html}"></div>
-
-<div th:insert="~{savingPosition.html}"></div>
 
 </body>
 </html>
