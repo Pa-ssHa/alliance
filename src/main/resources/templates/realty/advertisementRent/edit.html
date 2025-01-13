@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Редактирование объявления</title>
@@ -23,7 +23,8 @@
     <div th:insert="~{navbar.html}"></div>
 
     <!-- Кнопка "Назад" -->
-    <a th:href="@{/realty/advertisementRent/{id}(id=${upAdvertisementRent.getId()})}" class="btn btn-secondary back-button">
+    <a th:href="@{/realty/advertisementRent/{id}(id=${upAdvertisementRent.getId()})}"
+       class="btn btn-secondary back-button">
         <i class="fas fa-arrow-left"></i>
     </a>
 
@@ -45,15 +46,18 @@
                 <label for="price" class="form-label">Цена</label>
                 <input type="text" th:field="*{price}" id="price" class="form-control">
             </div>
-            <div class="mb-3">
-                <label for="newImages" class="form-label">Добавить новые фотографии</label>
-                <input type="file" id="newImages" name="newImages" multiple class="form-control">
+            <div sec:authorize="hasRole('ADMIN')">
+                <div class="mb-3">
+                    <label for="newImages" class="form-label">Добавить новые фотографии</label>
+                    <input type="file" id="newImages" name="newImages" multiple class="form-control">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-success btn-custom">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                </div>
             </div>
-            <div>
-                <button type="submit" class="btn btn-success btn-custom">
-                    <i class="fas fa-save"></i> Сохранить изменения
-                </button>
-            </div>
+
         </form>
     </div>
 

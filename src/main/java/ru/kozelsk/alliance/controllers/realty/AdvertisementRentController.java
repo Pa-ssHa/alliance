@@ -43,13 +43,15 @@ public class AdvertisementRentController {
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public String newAdvertisementRent(Model model) {
         model.addAttribute("newAdvertisementRent", new AdvertisementRentForm());
         return "realty/advertisementRent/new";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public String createAdvertisementRent(@ModelAttribute("newAdvertisementRent") AdvertisementRentForm advertisementRentForm,
                                           @RequestParam("images") MultipartFile[] imageFiles,
@@ -86,8 +88,9 @@ public class AdvertisementRentController {
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public String editAdvertisementSale(@PathVariable("id") int id, Model model) {
         AdvertisementRent advertisementRent = advertisementRentService.findOne(id);
         advertisementRent.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
@@ -97,6 +100,7 @@ public class AdvertisementRentController {
         return "realty/advertisementRent/edit";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public String updateAdvertisementSale(@PathVariable("id") int id, @ModelAttribute("upAdvertisementRent") AdvertisementRent upAdvertisementRent,
                                           @RequestParam(value = "newImages", required = true) MultipartFile[] newImages,
@@ -123,6 +127,7 @@ public class AdvertisementRentController {
     }
 
     ////////////////////// замена фото
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/updateImage/{id}")
     public String updateImage(@PathVariable("id") int id,
                               @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
@@ -142,6 +147,7 @@ public class AdvertisementRentController {
         return "redirect:/realty/advertisementRent/edit/" + oldImage.getAdvertisement().getId();
     }
 //  Сделать фото главным
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("setMainImage/{imageId}")
     public String setMainImage(@PathVariable("imageId") int imageId, @RequestParam("advertisementId") int advertisementId) throws IOException {
         advertisementRentImageService.setMainImage(imageId, advertisementId);
@@ -152,7 +158,8 @@ public class AdvertisementRentController {
 
 //      Удаление объявления
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("isAuthenticated()")
     public String deleteAdvertisementSale(@PathVariable("id") int id) {
         AdvertisementRent advertisementRent = advertisementRentService.findOne(id);
         for (AdvertisementRentImage image : advertisementRent.getImages()) {
@@ -164,6 +171,7 @@ public class AdvertisementRentController {
     }
 
 //    удаление фото
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteImage/{id}")
     public String deleteImage(@PathVariable("id") int id) {
         int temp_id = advertisementRentImageService.findOne(id).getAdvertisement().getId();

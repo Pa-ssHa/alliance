@@ -60,7 +60,7 @@ public class AuthController {
             newUser.setPhone(phoneNumber);
             newUser.setUsername(phoneNumber); // Используем номер телефона как имя пользователя
             newUser.setPassword("defaultPassword"); // Установите безопасный пароль
-            newUser.setRoles(Set.of(Role.USER));
+            newUser.setRoles(Set.of(Role.ROLE_USER));
             newUser.setActive(true);
             newUser.setPhoneVerified(true);
 

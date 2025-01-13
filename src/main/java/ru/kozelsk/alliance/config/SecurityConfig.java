@@ -36,7 +36,8 @@ public class SecurityConfig {
 
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/realty/new", "/realty/edit/**", "/realty/delete/**").authenticated()
+                        .requestMatchers("/realty/new", "/realty/edit/**", "/realty/delete/**").hasRole("ADMIN")
+//                        .requestMatchers("/realty/new", "/realty/edit/**", "/realty/delete/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

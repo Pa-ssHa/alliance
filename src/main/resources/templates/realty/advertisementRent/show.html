@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Объявление</title>
@@ -35,17 +35,19 @@
 
         <!-- Кнопки действий -->
         <div class="d-flex flex-wrap mt-4">
-            <a th:href="@{/realty/advertisementRent/edit/{id}(id=${oneAdvertisementRent.getId()})}"
-               class="btn btn-primary btn-custom">
-                <i class="fas fa-edit"></i> Редактировать
-            </a>
-            <form th:method="POST" th:action="@{/realty/advertisementRent/{id}(id=${oneAdvertisementRent.getId()})}"
-                  onsubmit="return confirm('Вы уверены, что хотите удалить это объявление?');">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" class="btn btn-danger btn-custom">
-                    <i class="fas fa-trash-alt"></i> Удалить
-                </button>
-            </form>
+            <div sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/realty/advertisementRent/edit/{id}(id=${oneAdvertisementRent.getId()})}"
+                   class="btn btn-primary btn-custom">
+                    <i class="fas fa-edit"></i> Редактировать
+                </a>
+                <form th:method="POST" th:action="@{/realty/advertisementRent/{id}(id=${oneAdvertisementRent.getId()})}"
+                      onsubmit="return confirm('Вы уверены, что хотите удалить это объявление?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger btn-custom">
+                        <i class="fas fa-trash-alt"></i> Удалить
+                    </button>
+                </form>
+            </div>
             <a th:href="@{/realty}" class="btn btn-secondary btn-custom">
                 <i class="fas fa-home"></i> На главную
             </a>

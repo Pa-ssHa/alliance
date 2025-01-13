@@ -76,9 +76,9 @@ public class RegistrationController {
 //        newUser.setRoles(Set.of(Role.USER));
 
         if (newUser.getUsername().equals("admin") && newUser.getPassword().equals("AdminAlliance89107091769")) {
-            newUser.setRoles(Set.of(Role.ADMIN));
+            newUser.setRoles(Set.of(Role.ROLE_ADMIN));
         } else {
-            newUser.setRoles(Set.of(Role.USER));
+            newUser.setRoles(Set.of(Role.ROLE_USER));
         }
 
         newUser.setActive(true);
@@ -128,9 +128,9 @@ public class RegistrationController {
 
 
             if (tempUser.getUsername().equals("admin") && tempUser.getPassword().equals("AdminAlliance89107091769")) {
-                tempUser.setRoles(Set.of(Role.ADMIN));
+                tempUser.setRoles(Set.of(Role.ROLE_ADMIN));
             }else {
-                tempUser.setRoles(Set.of(Role.USER));
+                tempUser.setRoles(Set.of(Role.ROLE_USER));
             }
             tempUser.setActive(true);
             tempUser.setPhoneVerified(true);
@@ -170,6 +170,9 @@ public class RegistrationController {
     @PostMapping("/login")
     public String login(@RequestParam String name, @RequestParam String password) {
         User user = myUserDetailsService.findByUsername(name).orElse(null);
+        if(user == null) {
+            user = myUserDetailsService.findByPhone(name).orElse(null);
+        }
         if (user != null && user.isPhoneVerified()) {
             // создаем объект аутентификации
             Authentication authentication = authenticationManager.authenticate(

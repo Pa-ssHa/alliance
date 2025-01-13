@@ -4,6 +4,7 @@ package ru.kozelsk.alliance.controllers.realty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -68,12 +69,14 @@ public class AdvertisementSaleController {
     }*/
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
     public String newAdvertisementSale(Model model) {
         model.addAttribute("newAdvertisementSale", new AdvertisementSaleForm());
         return "realty/advertisementSale/new";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public String createAdvertisementSale(@ModelAttribute("newAdvertisementSale") AdvertisementSaleForm advertisementSaleForm,
                                           @RequestParam("images") MultipartFile[] imageFiles,
@@ -110,6 +113,7 @@ public class AdvertisementSaleController {
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String editAdvertisementSale(@PathVariable("id") int id, Model model) {
         AdvertisementSale advertisementSale = advertisementSaleService.findOne(id);
@@ -120,6 +124,7 @@ public class AdvertisementSaleController {
         return "realty/advertisementSale/edit";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public String updateAdvertisementSale(@PathVariable("id") int id, @ModelAttribute("upAdvertisementSale") AdvertisementSale upAdvertisementSale,
                                           @RequestParam(value = "newImages", required = true) MultipartFile[] newImages,
@@ -146,6 +151,7 @@ public class AdvertisementSaleController {
     }
 
     ////////////////////// замена фото
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/updateImage/{id}")
     public String updateImage(@PathVariable("id") int id,
                               @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
@@ -165,6 +171,7 @@ public class AdvertisementSaleController {
         return "redirect:/realty/advertisementSale/edit/" + oldImage.getAdvertisement().getId();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("setMainImage/{imageId}")
     public String setMainImage(@PathVariable("imageId") int imageId, @RequestParam("advertisementId") int advertisementId) throws IOException {
         advertisementSaleImageService.setMainImage(imageId, advertisementId);
@@ -175,6 +182,7 @@ public class AdvertisementSaleController {
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public String deleteAdvertisementSale(@PathVariable("id") int id) {
         AdvertisementSale advertisementSale = advertisementSaleService.findOne(id);
@@ -186,6 +194,7 @@ public class AdvertisementSaleController {
         return "redirect:/realty";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteImage/{id}")
     public String deleteImage(@PathVariable("id") int id) {
         int temp_id = advertisementSaleImageService.findOne(id).getAdvertisement().getId();

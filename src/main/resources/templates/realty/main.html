@@ -181,15 +181,19 @@
             .agency-section h2 {
                 font-size: 2rem;
             }
+
             .agency-section p {
                 font-size: 1rem;
             }
+
             .reviews-section h2 {
                 font-size: 2rem;
             }
+
             .card {
                 margin: 5px;
             }
+
             .fixed-size-image {
                 height: 150px;
             }
@@ -230,7 +234,8 @@
         <div class="swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" th:each="advertisement : ${advertisementsSale}">
-                    <div class="card" th:onclick="'window.location.href=\'' + @{/realty/advertisementSale/{id}(id=${advertisement.getId()})} + '\''">
+                    <div class="card"
+                         th:onclick="'window.location.href=\'' + @{/realty/advertisementSale/{id}(id=${advertisement.getId()})} + '\''">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${advertisement.title}">Название</h5>
                             <p class="card-text fw-bold" th:text="${advertisement.price + ' руб.'}">Цена</p>
@@ -254,7 +259,7 @@
             <div class="swiper-button-next"></div>
         </div>
     </div>
-    <div class="text-center mt-3">
+    <div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
         <form th:method="GET" th:action="@{/realty/advertisementSale/new}">
             <button type="submit" class="btn btn-success">Создать объявление</button>
         </form>
@@ -268,7 +273,8 @@
         <div class="swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" th:each="advertisement : ${advertisementsRent}">
-                    <div class="card" th:onclick="'window.location.href=\'' + @{/realty/advertisementRent/{id}(id=${advertisement.getId()})} + '\''">
+                    <div class="card"
+                         th:onclick="'window.location.href=\'' + @{/realty/advertisementRent/{id}(id=${advertisement.getId()})} + '\''">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${advertisement.title}">Название</h5>
                             <p class="card-text fw-bold" th:text="${advertisement.price + ' руб.'}">Цена</p>
@@ -292,14 +298,13 @@
             <div class="swiper-button-next"></div>
         </div>
     </div>
-    
-    <div class="text-center mt-3">
+
+    <div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
         <form th:method="GET" th:action="@{/realty/advertisementRent/new}">
             <button type="submit" class="btn btn-success">Создать объявление</button>
         </form>
     </div>
 </div>
-
 
 
 <!-- Секция отзывов -->
@@ -311,7 +316,8 @@
                 <div class="card">
                     <div class="card-body">
                         <p class="card-text" th:text="${feedback.text}"></p>
-                        <p class="card-text"><small class="text-muted" th:text="${feedback.dateOfPlacement}"></small></p>
+                        <p class="card-text"><small class="text-muted" th:text="${feedback.dateOfPlacement}"></small>
+                        </p>
                     </div>
                 </div>
             </div>
