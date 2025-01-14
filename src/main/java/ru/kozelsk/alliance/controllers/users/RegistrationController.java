@@ -28,14 +28,12 @@ public class RegistrationController {
     private final MyUserDetailsService myUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final FirebaseService firebaseService;
 
     @Autowired
-    public RegistrationController(MyUserDetailsService myUserDetailsService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, FirebaseService firebaseService) {
+    public RegistrationController(MyUserDetailsService myUserDetailsService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.myUserDetailsService = myUserDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-        this.firebaseService = firebaseService;
     }
 
     // регистрация
@@ -44,7 +42,118 @@ public class RegistrationController {
         return "users/registration";
     }
 
-    //    @PostMapping("/registration")
+
+    @PostMapping("/registration")
+    public String registerUser(@RequestParam String username, @RequestParam String phone,
+                               @RequestParam String password) {
+
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPhone(phone);
+        newUser.setPassword(password);
+
+        if (newUser.getUsername().equals("admin") && newUser.getPassword().equals("AdminAlliance89107091769")) {
+            newUser.setRoles(Set.of(Role.ROLE_ADMIN));
+        } else {
+            newUser.setRoles(Set.of(Role.ROLE_USER));
+        }
+
+        newUser.setActive(true);
+        newUser.setPhoneVerified(true);
+
+        myUserDetailsService.register(newUser);
+
+        return "redirect:/login";
+    }
+
+
+
+
+
+    @GetMapping("/login")
+    public String login() {
+        return "users/login";
+    }
+
+
+    @PostMapping("/login")
+    public String login(@RequestParam String name, @RequestParam String password) {
+        User user = myUserDetailsService.findByUsername(name).orElse(null);
+        if (user == null) {
+            user = myUserDetailsService.findByPhone(name).orElse(null);
+        }
+        if (user != null && user.isPhoneVerified()) {
+            // создаем объект аутентификации
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(name, password)
+            );
+
+            // устанавливаем аутентификацию в контекст безопасности
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return "redirect:/realty";
+        } else {
+            return "redirect:/login&error";
+        }
+    }
+
+
+
+    // тест
+    @GetMapping("/test-password")
+    @ResponseBody
+    public String testPassword() {
+        String rawPassword = "AdminAlliance89107091769"; // ваш пароль
+        String encodedPassword = "$2a$10$HFFJS1t5zrJEUbl6La2CxOir.yQxFXjCKibk8TEYCBtWburSmwTsu"; // хэш пароля из базы
+
+        if (passwordEncoder.matches(rawPassword, encodedPassword)) {
+            return "Пароль совпадает";
+        } else {
+            return "Пароль не совпадает";
+        }
+    }
+}
+
+
+
+
+//    @GetMapping("/verify-phone")
+//    public String verifyPhone() {
+//        return "users/verify-phone";
+//    }
+//
+//    // подтверждение
+//    @PostMapping("/verify-phone")
+//    public String verifyPhone(@RequestParam String code, HttpSession session) {
+//
+//        // получаем пользователя из сессии
+//        User tempUser = (User) session.getAttribute("tempUser");
+//
+//        if (tempUser != null) {
+//
+//
+//            if (tempUser.getUsername().equals("admin") && tempUser.getPassword().equals("AdminAlliance89107091769")) {
+//                tempUser.setRoles(Set.of(Role.ROLE_ADMIN));
+//            } else {
+//                tempUser.setRoles(Set.of(Role.ROLE_USER));
+//            }
+//            tempUser.setActive(true);
+//            tempUser.setPhoneVerified(true);
+//            myUserDetailsService.register(tempUser);
+//
+//            // очищаем временного пользователя из сессии
+//            session.removeAttribute("tempUser");
+//
+//            return "redirect:/realty";
+//        } else {
+//            return "redirect:/verify-phone?error";
+//        }
+//
+//    }
+
+
+
+
+//    @PostMapping("/registration")
 //    public String registerUser(User user) {
 //
 //        // генерация кода
@@ -64,33 +173,6 @@ public class RegistrationController {
 //
 //        return "redirect:/verify-phone";
 //    }
-    @PostMapping("/registration")
-    public String registerUser(@RequestParam String username, @RequestParam String phone,
-                               @RequestParam String password) {
-
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPhone(phone);
-        newUser.setPassword(password);
-
-//        newUser.setRoles(Set.of(Role.USER));
-
-        if (newUser.getUsername().equals("admin") && newUser.getPassword().equals("AdminAlliance89107091769")) {
-            newUser.setRoles(Set.of(Role.ROLE_ADMIN));
-        } else {
-            newUser.setRoles(Set.of(Role.ROLE_USER));
-        }
-
-        newUser.setActive(true);
-        newUser.setPhoneVerified(true);
-
-        myUserDetailsService.register(newUser);
-
-        return "redirect:/login";
-    }
-
-
-
 
 
 //    @GetMapping("/verify-phone")
@@ -112,45 +194,6 @@ public class RegistrationController {
 //        }
 //    }
 
-    @GetMapping("/verify-phone")
-    public String verifyPhone() {
-        return "users/verify-phone";
-    }
-
-    // подтверждение
-    @PostMapping("/verify-phone")
-    public String verifyPhone(@RequestParam String code, HttpSession session) {
-
-        // получаем пользователя из сессии
-        User tempUser = (User) session.getAttribute("tempUser");
-
-        if(tempUser != null) {
-
-
-            if (tempUser.getUsername().equals("admin") && tempUser.getPassword().equals("AdminAlliance89107091769")) {
-                tempUser.setRoles(Set.of(Role.ROLE_ADMIN));
-            }else {
-                tempUser.setRoles(Set.of(Role.ROLE_USER));
-            }
-            tempUser.setActive(true);
-            tempUser.setPhoneVerified(true);
-            myUserDetailsService.register(tempUser);
-
-            // очищаем временного пользователя из сессии
-            session.removeAttribute("tempUser");
-
-            return "redirect:/realty";
-        }else {
-            return "redirect:/verify-phone?error";
-        }
-
-    }
-
-
-    @GetMapping("/login")
-    public String login() {
-        return "users/login";
-    }
 
     //    @PostMapping("/login")
 //    public String login(@RequestParam String name, @RequestParam String password){
@@ -167,26 +210,6 @@ public class RegistrationController {
 //            return "redirect:/login&error";
 //        }
 //    }
-    @PostMapping("/login")
-    public String login(@RequestParam String name, @RequestParam String password) {
-        User user = myUserDetailsService.findByUsername(name).orElse(null);
-        if(user == null) {
-            user = myUserDetailsService.findByPhone(name).orElse(null);
-        }
-        if (user != null && user.isPhoneVerified()) {
-            // создаем объект аутентификации
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(name, password)
-            );
-
-            // устанавливаем аутентификацию в контекст безопасности
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return "redirect:/realty";
-        } else {
-            return "redirect:/login&error";
-        }
-    }
-
 //    @PostMapping("/register-from-firebase")
 //    @ResponseBody
 //    public String registerUserFromFirebase(@RequestParam Map<String, String> payload){
@@ -227,19 +250,3 @@ public class RegistrationController {
 //    }
 
 
-    // тест
-    @GetMapping("/test-password")
-    @ResponseBody
-    public String testPassword() {
-        String rawPassword = "AdminAlliance89107091769"; // ваш пароль
-        String encodedPassword = "$2a$10$HFFJS1t5zrJEUbl6La2CxOir.yQxFXjCKibk8TEYCBtWburSmwTsu"; // хэш пароля из базы
-
-        if (passwordEncoder.matches(rawPassword, encodedPassword)) {
-            return "Пароль совпадает";
-        } else {
-            return "Пароль не совпадает";
-        }
-    }
-
-
-}

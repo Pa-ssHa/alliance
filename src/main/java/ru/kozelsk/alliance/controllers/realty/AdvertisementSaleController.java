@@ -80,7 +80,7 @@ public class AdvertisementSaleController {
     @PostMapping()
     public String createAdvertisementSale(@ModelAttribute("newAdvertisementSale") AdvertisementSaleForm advertisementSaleForm,
                                           @RequestParam("images") MultipartFile[] imageFiles,
-                                          @RequestParam("mainImage") int mainImageIndex,
+                                          @RequestParam(value = "mainImage", required = false) Integer mainImageIndex,
                                           BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors())
             return "realty/advertisementSale/new";
@@ -100,7 +100,12 @@ public class AdvertisementSaleController {
                 image.setFilename(fileName);
                 image.setImagePath(imagePath);
                 image.setAdvertisement(advertisementSale);
-                image.setMain(i == mainImageIndex);
+                if(mainImageIndex == null && i ==0){
+                    image.setMain(true);
+                }else {
+                    image.setMain(i == mainImageIndex);
+                }
+                images.add(image);
                 images.add(image);
             }
         }

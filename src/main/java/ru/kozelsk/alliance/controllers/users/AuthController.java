@@ -32,7 +32,9 @@ public class AuthController {
     }
 
     @PostMapping("/register-from-firebase")
-    public ResponseEntity<Map<String, Boolean>> registerFromFirebase(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Map<String, Boolean>> registerFromFirebase(
+            @RequestBody Map<String, String> payload) {
+
         String idToken = payload.get("idToken");
         if (idToken == null) {
             return ResponseEntity.badRequest().body(Map.of("success", false));
