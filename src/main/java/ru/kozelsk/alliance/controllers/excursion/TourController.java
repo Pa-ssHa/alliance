@@ -99,7 +99,7 @@ public class TourController {
         Tour tour = tourService.findOne(id);
         tour.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
 
-        model.addAttribute("oneTour", tour);
+        model.addAttribute("upTour", tourService.findOne(id));
         return "excursion/tour/edit";
     }
 
@@ -117,12 +117,14 @@ public class TourController {
 
         if(newImages != null) {
             for(MultipartFile imageFile : newImages){
-                String imagePath = TourImageService.saveImageWithName(imageFile);
-                TourImage image = new TourImage();
-                image.setFilename(imageFile.getOriginalFilename());
-                image.setImagePath(imagePath);
-                image.setTour(upTour);
-                tourImageService.save(image);
+                if (!imageFile.isEmpty()) {
+                    String imagePath = TourImageService.saveImageWithName(imageFile);
+                    TourImage image = new TourImage();
+                    image.setFilename(imageFile.getOriginalFilename());
+                    image.setImagePath(imagePath);
+                    image.setTour(upTour);
+                    tourImageService.save(image);
+                }
             }
         }
         return "redirect:/excursion/tour/edit/" + id;

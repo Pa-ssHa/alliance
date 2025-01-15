@@ -33,7 +33,8 @@
     <div th:insert="~{navbar.html}"></div>
 
     <!-- Кнопка "Назад" -->
-    <a th:href="@{/excursion/{id}(id=${upTour.getId()})}" class="btn btn-secondary back-button">
+    <a th:href="@{/excursion/tour/{id}(id=${upTour.getId()})}"
+       class="btn btn-secondary back-button">
         <i class="fas fa-arrow-left"></i>
     </a>
 

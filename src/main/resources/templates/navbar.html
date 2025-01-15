@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/realty">Недвижимость</a>
+                    <a class="nav-link" href="/realty">Недвижимость</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Страхование</a>
@@ -56,17 +56,20 @@
 
 <!-- Добавление пользовательского JS -->
 <script>
-    // Скрипт для переключения активной вкладки
+    // Скрипт для подсветки активной вкладки на основе текущего URL
     document.addEventListener("DOMContentLoaded", function () {
-        const navLinks = document.querySelectorAll(".nav-link");
+        const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+        const currentUrl = window.location.pathname; // Получаем текущий URL
 
         navLinks.forEach(link => {
-            link.addEventListener("click", function () {
-                // Удаляем класс active у всех ссылок
-                navLinks.forEach(nav => nav.classList.remove("active"));
-                // Добавляем класс active к текущей ссылке
-                this.classList.add("active");
-            });
+            const linkUrl = link.getAttribute("href");
+
+            // Проверяем, совпадает ли URL ссылки с текущим URL
+            if (currentUrl === linkUrl) {
+                link.classList.add("active"); // Добавляем класс active
+            } else {
+                link.classList.remove("active"); // Убираем класс active
+            }
         });
     });
 </script>
@@ -83,5 +86,32 @@
 
     .username:hover {
         background: none !important;
+    }
+
+    /* Стили для активной вкладки */
+    .nav-link.active {
+        color: #007bff !important; /* Цвет текста */
+        font-weight: bold; /* Жирный шрифт */
+        position: relative; /* Для псевдоэлементов */
+    }
+
+    /* Прямоугольник по бокам */
+    /*.nav-link.active::before,*/
+    /*.nav-link.active::after {*/
+    /*    content: "";*/
+    /*    position: absolute;*/
+    /*    top: 50%;*/
+    /*    width: 2px; !* Ширина прямоугольника *!*/
+    /*    height: 80%; !* Высота прямоугольника *!*/
+    /*    background-color: #007bff; !* Цвет прямоугольника *!*/
+    /*    transform: translateY(-50%);*/
+    /*}*/
+
+    .nav-link.active::before {
+        left: -8px; /* Положение левого прямоугольника */
+    }
+
+    .nav-link.active::after {
+        right: -8px; /* Положение правого прямоугольника */
     }
 </style>
