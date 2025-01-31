@@ -10,8 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.kozelsk.alliance.models.excursion.Tour;
 import ru.kozelsk.alliance.models.excursion.TourForm;
 import ru.kozelsk.alliance.models.excursion.TourImage;
+import ru.kozelsk.alliance.models.excursion.booking.Booking;
 import ru.kozelsk.alliance.services.excursion.TourImageService;
 import ru.kozelsk.alliance.services.excursion.TourService;
+import ru.kozelsk.alliance.services.excursion.booking.BookingService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,11 +28,13 @@ public class TourController {
 
     private final TourService tourService;
     private final TourImageService tourImageService;
+    private final BookingService bookingService;
 
     @Autowired
-    public TourController(TourService tourService, TourImageService tourImageService) {
+    public TourController(TourService tourService, TourImageService tourImageService, BookingService bookingService) {
         this.tourService = tourService;
         this.tourImageService = tourImageService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping("/{id}")
@@ -38,6 +42,9 @@ public class TourController {
         Tour tour = tourService.findOne(id);
         tour.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
         model.addAttribute("oneTour", tourService.findOne(id));
+
+        List<Booking> bookings = bookingService.getBookingForTour(id);
+        model.addAttribute("bookings", bookings);
 
         return "excursion/tour/show";
     }

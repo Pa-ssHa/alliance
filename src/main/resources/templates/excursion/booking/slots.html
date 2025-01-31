@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Бронирование</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .time-slot {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .time-slot:hover {
+      background-color: #f8f9fa;
+    }
+    .selected {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+  <div th:insert="~{navbar.html}"></div>
+
+  <div class="card p-4 mb-4">
+    <h2 class="card-title mb-3" th:text="${tour.title}"></h2>
+    <h4 class="card-subtitle mb-3 text-muted" th:text="${tour.description}"></h4>
+    <h3 class="card-text text-success fw-bold" th:text="${tour.price + ' руб.'}"></h3>
+
+    <!-- Календарь для выбора даты -->
+    <h4>Выберите дату:</h4>
+    <form th:action="@{/excursion/booking/{id}/slots(id=${tour.id})}" method="get">
+      <div class="mb-3">
+        <input type="date" class="form-control" name="date" required
+               th:value="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}">
+      </div>
+      <button type="submit" class="btn btn-primary">Показать доступные слоты</button>
+    </form>
+
+    <!-- Список доступных временных слотов -->
+    <div th:if="${selectedDate != null}">
+      <h4 class="mt-4">Доступные слоты на <span th:text="${selectedDate}"></span>:</h4>
+
+      <div th:if="${availableSlots.isEmpty()}" class="alert alert-warning">
+        На выбранную дату свободных слотов нет.
+      </div>
+
+      <div th:unless="${availableSlots.isEmpty()}">
+        <form th:action="@{/excursion/booking/{tourId}(tourId=${tour.id})}" method="post">
+          <div class="mb-3">
+            <label class="form-label">Выберите время:</label>
+            <div class="d-flex flex-wrap">
+              <div th:each="slot : ${availableSlots}" class="time-slot"
+                   th:data-time="${#temporals.format(slot, 'yyyy-MM-dd\'T\'HH:mm')}"
+                   onclick="selectTimeSlot(event, this)">
+                <span th:text="${#temporals.format(slot, 'HH:mm')}"></span>
+              </div>
+            </div>
+            <input type="hidden" id="bookingTime" name="bookingTime">
+          </div>
+          <button type="submit" class="btn btn-primary">Забронировать</button>
+        </form>
+      </div>
+    </div>
+
+    <a th:href="@{/excursion/tour/{id}(id=${tour.id})}" class="btn btn-secondary mt-3">Назад</a>
+  </div>
+</div>
+
+<script>
+  function selectTimeSlot(event, element) {
+    event.preventDefault();
+    document.querySelectorAll('.time-slot').forEach(slot => {
+      slot.classList.remove('selected');
+    });
+    element.classList.add('selected');
+    const selectedTime = element.getAttribute('data-time');
+    document.getElementById('bookingTime').value = selectedTime;
+  }
+</script>
+</body>
+</html>

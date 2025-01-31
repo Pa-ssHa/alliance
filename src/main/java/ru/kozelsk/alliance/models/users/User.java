@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.kozelsk.alliance.models.excursion.booking.Booking;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -45,14 +47,18 @@ public class User implements UserDetails {
     private String verificationCode;
     private boolean phoneVerified;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Booking> bookings;
+
     public User(String username, String phone, String password,
-                boolean active, Set<Role> roles, String typeService) {
+                boolean active, Set<Role> roles, String typeService, List<Booking> bookings) {
         this.typeService = typeService;
         this.username = username;
         this.phone = phone;
         this.password = password;
         this.active = active;
         this.roles = roles;
+        this.bookings = bookings;
     }
 
     public User(){}
@@ -130,6 +136,13 @@ public class User implements UserDetails {
         this.phoneVerified = phoneVerified;
     }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
 
     @Override
     public boolean isAccountNonExpired() {

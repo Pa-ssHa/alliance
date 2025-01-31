@@ -7,25 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <style>
-        /* Стили для изображений */
         .fixed-size-image {
             width: 100%;
-            height: 200px; /* Фиксированная высота для изображений */
-            object-fit: contain; /* Сохраняем пропорции изображения */
+            height: 200px;
+            object-fit: contain;
             border-radius: 8px;
-            background-color: #f8f9fa; /* Фон для пустого пространства */
-            cursor: pointer; /* Курсор в виде указателя */
+            background-color: #f8f9fa;
+            cursor: pointer;
         }
-
-        /* Стили для модального окна */
         .modal-image {
             max-width: 100%;
-            max-height: 80vh; /* Ограничиваем высоту изображения в модальном окне */
+            max-height: 80vh;
             object-fit: contain;
-            margin: 0 auto; /* Центрируем изображение */
+            margin: 0 auto;
         }
-
-        /* Стрелки для переключения */
         .modal-arrow {
             position: absolute;
             top: 50%;
@@ -42,15 +37,12 @@
             cursor: pointer;
             z-index: 1000;
         }
-
         .modal-arrow:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
-
         .modal-arrow-left {
             left: 10px;
         }
-
         .modal-arrow-right {
             right: 10px;
         }
@@ -66,6 +58,27 @@
         <h2 class="card-title mb-3" th:text="${oneTour.title}"></h2>
         <h4 class="card-subtitle mb-3 text-muted" th:text="${oneTour.description}"></h4>
         <h3 class="card-text text-success fw-bold" th:text="${oneTour.price + ' руб.'}"></h3>
+
+        <!-- Занятые временные слоты -->
+        <div th:if="${bookings.isEmpty()}" class="alert alert-info mb-4">
+            На данный тур пока нет бронирований.
+        </div>
+        <div th:unless="${bookings.isEmpty()}">
+            <h4>Занятые временные слоты:</h4>
+            <ul class="list-group mb-4">
+                <li th:each="booking : ${bookings}" class="list-group-item">
+                    <span th:text="${#temporals.format(booking.bookingTime, 'dd.MM.yyyy HH:mm')}"></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Кнопка "Забронировать" -->
+        <div sec:authorize="isAuthenticated()">
+            <a th:href="@{/excursion/booking/{id}(id=${oneTour.id})}" class="btn btn-primary mb-4">Забронировать</a>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <p class="text-warning">Для бронирования необходимо <a th:href="@{/login}">войти</a> в систему.</p>
+        </div>
 
         <!-- Галерея изображений -->
         <div class="row mt-4">
@@ -124,7 +137,6 @@
     let currentImageIndex = 0;
     const images = [];
 
-    // Функция для открытия модального окна с изображением
     function openImageModal(event) {
         const imageIndex = event.target.getAttribute('data-bs-image-index');
         currentImageIndex = parseInt(imageIndex);
@@ -132,13 +144,11 @@
         new bootstrap.Modal(document.getElementById('imageModal')).show();
     }
 
-    // Функция для обновления изображения в модальном окне
     function updateModalImage() {
         const modalImage = document.getElementById('modalImage');
         modalImage.src = images[currentImageIndex];
     }
 
-    // Функция для переключения между изображениями
     function changeImage(direction) {
         currentImageIndex += direction;
         if (currentImageIndex < 0) {
@@ -149,7 +159,6 @@
         updateModalImage();
     }
 
-    // Инициализация массива изображений
     document.addEventListener('DOMContentLoaded', () => {
         const imageElements = document.querySelectorAll('.fixed-size-image');
         imageElements.forEach(img => {
