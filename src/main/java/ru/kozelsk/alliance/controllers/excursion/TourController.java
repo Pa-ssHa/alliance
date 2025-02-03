@@ -2,6 +2,7 @@ package ru.kozelsk.alliance.controllers.excursion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import ru.kozelsk.alliance.models.excursion.Tour;
 import ru.kozelsk.alliance.models.excursion.TourForm;
 import ru.kozelsk.alliance.models.excursion.TourImage;
 import ru.kozelsk.alliance.models.excursion.booking.Booking;
+import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.excursion.TourImageService;
 import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
@@ -21,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/excursion/tour")
@@ -38,13 +41,22 @@ public class TourController {
     }
 
     @GetMapping("/{id}")
-    public String showTour(@PathVariable("id") int id, Model model) {
+    public String showTour(@PathVariable("id") int id, Model model, @AuthenticationPrincipal User user) {
         Tour tour = tourService.findOne(id);
         tour.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
         model.addAttribute("oneTour", tourService.findOne(id));
 
-        List<Booking> bookings = bookingService.getBookingForTour(id);
-        model.addAttribute("bookings", bookings);
+
+        if(user != null) {
+            List<Booking> bookings = bookingService.getBookingForTour(id);
+            Optional<Booking> booking = bookingService.isBookingForUser(bookings, user.getId());
+            model.addAttribute("bookings", booking);
+        }else {
+            model.addAttribute("bookings", Optional.empty());
+        }
+
+//        List<Booking> bookings = bookingService.getBookingForTour(id);
+//        model.addAttribute("bookings", bookings);
 
         return "excursion/tour/show";
     }
@@ -100,6 +112,7 @@ public class TourController {
 
 
 
+    //    Редактирование туров
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String editTour(@PathVariable("id") int id, Model model) {

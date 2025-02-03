@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -32,6 +33,33 @@ public class BookingService {
         return bookingRepository.findByUserId(userId);
     }
 
+    // Проверка, есть ли у человека бронирование по конкретному туру.
+    // Возвращает true, если у человека есть еще не истекшее бронирование
+    public boolean isBookingCurrentTourForUser(int tourId, int userId){
+        LocalDateTime now = LocalDateTime.now();
+        List<Booking> bookings = getBookingForUser(userId);
+        for (Booking booking : bookings) {
+            if(booking.getTour().getId() == tourId && booking.getBookingTime().isAfter(now)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // проверяет есть ли по этому туру у человека бронь и выдает последнюю
+    // список сортируется, чтобы избежать проверки старых бронирований
+    public Optional<Booking> isBookingForUser(List<Booking> bookings, int userId){
+        bookings.sort((b1,  b2) -> b2.getBookingTime().compareTo(b1.getBookingTime()));
+
+        for (Booking booking : bookings) {
+            if(booking.getUser().getId() == userId){
+                return Optional.of(booking);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // добавить сюда кэширование
     public boolean isTimeSlotAvailable(LocalDateTime bookingTime){
         LocalDateTime start = bookingTime.minusHours(1);
         LocalDateTime end = bookingTime.plusHours(1);
@@ -39,7 +67,12 @@ public class BookingService {
         return bookings.isEmpty();
     }
 
+    // создание бронирования
     public Booking createBooking(Tour tour, User user, LocalDateTime bookingTime){
+
+        if(isBookingCurrentTourForUser(tour.getId(), user.getId())){
+            throw new IllegalStateException("У вас уже есть активное бронирование этого тура");
+        }
 
         LocalTime startTime = LocalTime.of(10, 0);
         LocalTime endTime = LocalTime.of(17, 30);
@@ -59,6 +92,7 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    // выводить занятые слоты (пока не используется)
     public List<LocalDateTime> getBusyTimeSlots(int tourId){
         List<LocalDateTime> busyTimeslots = new ArrayList<>();
         List<Booking> bookings = bookingRepository.findByTourId(tourId);
