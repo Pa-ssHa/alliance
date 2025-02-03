@@ -60,6 +60,7 @@ public class BookingService {
     }
 
     // добавить сюда кэширование
+    // проверяет есть ли свободное место между данным временем +-1 час
     public boolean isTimeSlotAvailable(LocalDateTime bookingTime){
         LocalDateTime start = bookingTime.minusHours(1);
         LocalDateTime end = bookingTime.plusHours(1);
@@ -102,6 +103,7 @@ public class BookingService {
         return busyTimeslots;
     }
 
+    // выдает список свободных слотов с 10 до 17.30
     public List<LocalDateTime> getAvailableTimeSlots(LocalDate date){
         List<LocalDateTime> availableSlots = new ArrayList<>();
         LocalDateTime startTime = date.atTime(10,0);

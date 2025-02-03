@@ -1,8 +1,8 @@
-package ru.kozelsk.alliance.models.excursion;
+package ru.kozelsk.alliance.models.insurance;
 
 import javax.xml.crypto.Data;
 
-public class Feedback {
+public class FeedbackInsurance {
 
 
     private int id;

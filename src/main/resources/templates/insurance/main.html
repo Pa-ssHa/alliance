@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страхование</title>
+    <!-- Подключаем Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Подключаем Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Подключаем AOS для анимаций -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Подключаем кастомные стили -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Общие стили */
+        body {
+            background-color: #e6f7fa !important;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Навигационная панель */
+        .navbar-custom {
+            border-bottom: 2px solid #e0e0e0;
+            background-color: white;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #333 !important;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #007bff !important;
+        }
+
+        /* Секция услуг */
+        .services-section {
+            background-color: white;
+            padding: 80px 0;
+        }
+
+        .services-section h2 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            border-radius: 12px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff, #f3f8fb);
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .service-card .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .service-card .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #003f5c;
+        }
+
+        .service-card .card-text {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .btn-custom {
+            margin-top: 10px;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        /* Секция отзывов */
+        .reviews-section {
+            background-color: white;
+            padding: 80px 0;
+        }
+
+        .reviews-section h2 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 40px;
+        }
+
+        .reviews-section .card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .reviews-section .card-body {
+            padding: 20px;
+        }
+
+        .reviews-section .card-text {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .reviews-section .text-muted {
+            font-size: 0.9rem;
+        }
+
+        /* Футер */
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #f8f9fa;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .services-section h2 {
+                font-size: 2rem;
+            }
+
+            .service-card .card-title {
+                font-size: 1.25rem;
+            }
+
+            .service-card .card-text {
+                font-size: 1rem;
+            }
+
+            .reviews-section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Навигационная панель (navbar) -->
+<div th:insert="~{navbar.html}" class="navbar-custom"></div>
+
+<!-- Секция услуг -->
+<section class="services-section" data-aos="fade-up">
+    <div class="container">
+        <h2 class="text-center mb-4">Наши услуги</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="/img/car-insurance.jpg" alt="Страхование автомобилей">
+                    <div class="card-body">
+                        <h5 class="card-title">Страхование автомобилей</h5>
+                        <p class="card-text">ОСАГО, КАСКО и другие виды страхования для вашего автомобиля.</p>
+                        <a href="#" class="btn btn-primary btn-custom">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="/img/home-insurance.jpg" alt="Страхование квартир">
+                    <div class="card-body">
+                        <h5 class="card-title">Страхование квартир</h5>
+                        <p class="card-text">Защитите свое жилье от непредвиденных ситуаций.</p>
+                        <a href="#" class="btn btn-primary btn-custom">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="/img/life-insurance.jpg" alt="Страхование жизни">
+                    <div class="card-body">
+                        <h5 class="card-title">Страхование жизни</h5>
+                        <p class="card-text">Обеспечьте финансовую защиту для себя и своих близких.</p>
+                        <a href="#" class="btn btn-primary btn-custom">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Секция отзывов -->
+<section class="reviews-section" data-aos="fade-up">
+    <div class="container">
+        <h2 class="text-center mb-4">Отзывы наших клиентов</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Отличный сервис! Оформил страховку на машину быстро и без проблем.</p>
+                        <p class="card-text"><small class="text-muted">Иван, 12.10.2023</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Спасибо за помощь в выборе страховки для квартиры. Все четко и понятно.</p>
+                        <p class="card-text"><small class="text-muted">Мария, 05.10.2023</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Очень доволен страховкой жизни. Рекомендую!</p>
+                        <p class="card-text"><small class="text-muted">Алексей, 28.09.2023</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="#" class="btn btn-primary">Добавить отзыв</a>
+        </div>
+    </div>
+</section>
+
+<!-- Футер -->
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Страховая компания. Все права защищены.</p>
+        <p>
+            <a href="#">Политика конфиденциальности</a> |
+            <a href="#">Условия использования</a>
+        </p>
+    </div>
+</footer>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Подключение AOS JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        once: true,
+    });
+</script>
+</body>
+</html>

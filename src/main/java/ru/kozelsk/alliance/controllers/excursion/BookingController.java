@@ -75,6 +75,7 @@ public class BookingController {
             return "excursion/booking/form";
         }
 
+        // проверка наличия свободного времени
         if(bookingService.isTimeSlotAvailable(bookingTime)) {
             bookingService.createBooking(tour, user, bookingTime);
             return "redirect:/excursion/tour/" + tourId;
