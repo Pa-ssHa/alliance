@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.kozelsk.alliance.models.excursion.booking.Booking;
+import ru.kozelsk.alliance.models.insurance.FeedbackInsurance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FeedbackInsurance> feedbackInsurances;
 
     public User(String username, String phone, String password,
                 boolean active, Set<Role> roles, String typeService, List<Booking> bookings) {
@@ -135,6 +139,8 @@ public class User implements UserDetails {
     public void setPhoneVerified(boolean phoneVerified) {
         this.phoneVerified = phoneVerified;
     }
+
+
 
     public List<Booking> getBookings() {
         return bookings;
