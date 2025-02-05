@@ -14,5 +14,6 @@ public interface Feedback {
     void setDateOfPlacement(Date dateOfPlacement);
     User getUser();
     void setUser(User user);
-
+    int rating();
+    void setRating(int rating);
 }

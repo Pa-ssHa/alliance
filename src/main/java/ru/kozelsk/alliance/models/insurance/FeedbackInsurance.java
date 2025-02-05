@@ -25,6 +25,8 @@ public class FeedbackInsurance implements Feedback {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    private int rating;
+
     public FeedbackInsurance() {}
 
     public FeedbackInsurance(String text, Date dateOfPlacement, User user) {
@@ -36,41 +38,51 @@ public class FeedbackInsurance implements Feedback {
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     @Override
     public void setId(int id) {
-
+        this.id = id;
     }
 
     @Override
     public String getText() {
-        return "";
+        return text;
     }
 
     @Override
     public void setText(String text) {
-
+        this.text = text;
     }
 
     @Override
     public Date getDateOfPlacement() {
-        return null;
+        return dateOfPlacement;
     }
 
     @Override
     public void setDateOfPlacement(Date dateOfPlacement) {
-
+        this.dateOfPlacement = dateOfPlacement;
     }
 
     @Override
     public User getUser() {
-        return null;
+        return user;
     }
 
     @Override
     public void setUser(User user) {
+        this.user = user;
+    }
 
+    @Override
+    public int rating() {
+        return rating;
+    }
+
+    @Override
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

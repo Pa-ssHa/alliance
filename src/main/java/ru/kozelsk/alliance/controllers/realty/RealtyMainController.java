@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.realty.AdvertisementRent;
 import ru.kozelsk.alliance.models.realty.AdvertisementSale;
+import ru.kozelsk.alliance.models.realty.FeedbackRealty;
 import ru.kozelsk.alliance.services.realty.AdvertisementRentService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleService;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
@@ -35,6 +36,7 @@ public class RealtyMainController {
         model.addAttribute("advertisementsSale", advertisementSaleService.findAll());
         model.addAttribute("advertisementsRent", advertisementRentService.findAll());
         model.addAttribute("feedbacksRealty", feedbackRealtyService.findAll());
+        model.addAttribute("newFeedbackRealty", new FeedbackRealty());
         return "realty/main";
     }
 

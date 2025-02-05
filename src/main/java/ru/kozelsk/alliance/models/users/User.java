@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.kozelsk.alliance.models.excursion.booking.Booking;
 import ru.kozelsk.alliance.models.insurance.FeedbackInsurance;
+import ru.kozelsk.alliance.models.realty.FeedbackRealty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +54,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FeedbackInsurance> feedbackInsurances;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FeedbackRealty> feedbackRealties;
 
     public User(String username, String phone, String password,
                 boolean active, Set<Role> roles, String typeService, List<Booking> bookings) {

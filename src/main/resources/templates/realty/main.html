@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Подключаем AOS для анимаций -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- для звездочек в отзывах -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Подключаем кастомные стили -->
     <link rel="stylesheet" href="/css/styles.css">
     <style>
@@ -228,6 +230,14 @@
             .fixed-size-image {
                 height: 150px;
             }
+            .rating {
+                color: #ffc107; /* Цвет звездочек */
+                font-size: 1.2rem;
+            }
+
+            .fa-star {
+                margin-right: 2px;
+            }
         }
     </style>
 </head>
@@ -346,20 +356,72 @@
             <div class="col-md-4" th:each="feedback : ${feedbacksRealty}">
                 <div class="card">
                     <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div>
+                                <h5 class="card-title mb-0" th:text="${feedback.user.username}">Имя пользователя</h5>
+                                <small class="text-muted" th:text="${feedback.dateOfPlacement}">Дата</small>
+                            </div>
+                            <div class="rating ms-auto">
+                                <span th:each="star : ${#numbers.sequence(1, 5)}">
+                                    <i th:class="${star <= feedback.rating} ? 'fas fa-star' : 'far fa-star'"></i>
+                                </span>
+                            </div>
+                        </div>
                         <p class="card-text" th:text="${feedback.text}"></p>
-                        <p class="card-text"><small class="text-muted" th:text="${feedback.dateOfPlacement}"></small>
-                        </p>
+                        <div class="text-end">
+                            <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:action="@{/realty/feedback/delete/{id}(id=${feedback.id})}" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="text-center mt-3">
-            <form th:method="GET" th:action="@{/realty/feedback/new}">
-                <button type="submit" class="btn btn-primary">Добавить отзыв</button>
-            </form>
+        <!-- Кнопка для открытия модального окна -->
+        <div th:if="${#authorization.expression('isAuthenticated()')}" class="text-center mt-3">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal">Добавить отзыв</button>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <p class="text-warning">Для возможности оставить отзыв необходимо <a th:href="@{/login}">войти</a> в систему.</p>
         </div>
     </div>
 </section>
+
+<!-- Модальное окно для добавления отзыва -->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel">Новый отзыв</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:method="POST" th:action="@{/realty/feedback}" th:object="${newFeedbackRealty}">
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Текст отзыва</label>
+                            <textarea class="form-control" th:field="*{text}" id="text" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Рейтинг</label>
+                            <select class="form-control" id="rating" name="rating">
+                                <option value="1">1 звезда</option>
+                                <option value="2">2 звезды</option>
+                                <option value="3">3 звезды</option>
+                                <option value="4">4 звезды</option>
+                                <option value="5">5 звезд</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Футер -->
 <footer>
@@ -384,7 +446,6 @@
         once: true,
     });
 
-    // Инициализация Swiper
     // Инициализация Swiper
     const swiper = new Swiper('.swiper', {
         loop: true,
