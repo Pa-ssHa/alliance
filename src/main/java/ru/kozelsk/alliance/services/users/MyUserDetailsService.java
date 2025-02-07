@@ -55,7 +55,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return passwordEncoder.matches(rawPassword, encoderPassword);
     }
 
-    public void updateUser(User user) {
+    public void save(User user) {
         userRepository.save(user);
     }
 }

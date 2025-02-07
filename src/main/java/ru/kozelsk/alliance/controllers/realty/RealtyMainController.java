@@ -2,18 +2,22 @@ package ru.kozelsk.alliance.controllers.realty;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.realty.AdvertisementRent;
 import ru.kozelsk.alliance.models.realty.AdvertisementSale;
 import ru.kozelsk.alliance.models.realty.FeedbackRealty;
+import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.realty.AdvertisementRentService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleService;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
 import ru.kozelsk.alliance.utils.PartitionOfList;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/realty")
@@ -31,12 +35,18 @@ public class RealtyMainController {
     }
 
     @GetMapping()
-    public String allAdvertisementSale(Model model) {
+    public String allAdvertisementSale(Model model, Principal principal) {
+
+        if(principal != null) {
+            User user = (User) ((Authentication) principal).getPrincipal();
+            model.addAttribute("hasFeedback", user.isRealtyFeedback());
+        }
 
         model.addAttribute("advertisementsSale", advertisementSaleService.findAll());
         model.addAttribute("advertisementsRent", advertisementRentService.findAll());
         model.addAttribute("feedbacksRealty", feedbackRealtyService.findAll());
         model.addAttribute("newFeedbackRealty", new FeedbackRealty());
+
         return "realty/main";
     }
 

@@ -17,7 +17,7 @@ public class FeedbackInsurance implements Feedback {
 
     private String text;
 
-    @Column(name = "dataOfPlacement")
+    @Column(name = "date_of_placement")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfPlacement;
 

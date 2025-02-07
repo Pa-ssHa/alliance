@@ -41,6 +41,10 @@ public class User implements UserDetails {
     private String typeService;
     private boolean active;
 
+    private boolean isRealtyFeedback;
+    private boolean isExcursionFeedback;
+    private boolean isInsuranceFeedback;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -152,6 +156,46 @@ public class User implements UserDetails {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    public boolean isRealtyFeedback() {
+        return isRealtyFeedback;
+    }
+
+    public void setRealtyFeedback(boolean realtyFeedback) {
+        isRealtyFeedback = realtyFeedback;
+    }
+
+    public boolean isExcursionFeedback() {
+        return isExcursionFeedback;
+    }
+
+    public void setExcursionFeedback(boolean excursionFeedback) {
+        isExcursionFeedback = excursionFeedback;
+    }
+
+    public boolean isInsuranceFeedback() {
+        return isInsuranceFeedback;
+    }
+
+    public void setInsuranceFeedback(boolean insuranceFeedback) {
+        isInsuranceFeedback = insuranceFeedback;
+    }
+
+    public List<FeedbackInsurance> getFeedbackInsurances() {
+        return feedbackInsurances;
+    }
+
+    public void setFeedbackInsurances(List<FeedbackInsurance> feedbackInsurances) {
+        this.feedbackInsurances = feedbackInsurances;
+    }
+
+    public List<FeedbackRealty> getFeedbackRealties() {
+        return feedbackRealties;
+    }
+
+    public void setFeedbackRealties(List<FeedbackRealty> feedbackRealties) {
+        this.feedbackRealties = feedbackRealties;
     }
 
     @Override

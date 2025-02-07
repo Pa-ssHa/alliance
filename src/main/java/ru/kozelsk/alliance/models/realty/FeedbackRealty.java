@@ -19,7 +19,7 @@ public class FeedbackRealty implements Feedback {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "dateOfPlacement")
+    @Column(name = "date_of_placement")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfPlacement;
 

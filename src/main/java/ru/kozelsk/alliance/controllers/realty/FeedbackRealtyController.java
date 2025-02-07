@@ -1,6 +1,7 @@
 package ru.kozelsk.alliance.controllers.realty;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,17 +41,25 @@ public class FeedbackRealtyController {
 
         // получаем текущего пользователя
         User user = (User) ((Authentication) principal).getPrincipal();
-        feedbackRealty.setUser(user);
+        user.setRealtyFeedback(true);
+        myUserDetailsService.save(user);
 
+        feedbackRealty.setUser(user);
         // записываем текущее время
         feedbackRealty.setDateOfPlacement(new Date());
-
         feedbackRealtyService.save(feedbackRealty);
+
         return "redirect:/realty";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/delete/{id}")
     public String deleteFeedback(@PathVariable int id) {
+
+        User user = feedbackRealtyService.findOne(id).getUser();
+        user.setRealtyFeedback(false);
+        myUserDetailsService.save(user);
+
         feedbackRealtyService.delete(id);
         return "redirect:/realty";
     }
