@@ -10,6 +10,7 @@ import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.repositories.users.UserRepository;
 import ru.kozelsk.alliance.utils.MyUserDetails;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,14 @@ public class MyUserDetailsService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     public MyUserDetailsService() {}
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User findOne(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
 
 
     @Override

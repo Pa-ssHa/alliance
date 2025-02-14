@@ -460,6 +460,12 @@
         <button type="submit" class="btn btn-success">Перейти в бд клиентов</button>
     </form>
 </div>
+<!-- Кнопка для перехода в панель администратора -->
+<div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
+    <form th:method="GET" th:action="@{/admin/users}">
+        <button type="submit" class="btn btn-success">Перейти в бд пользователей</button>
+    </form>
+</div>
 
 <!-- Футер -->
 <footer>

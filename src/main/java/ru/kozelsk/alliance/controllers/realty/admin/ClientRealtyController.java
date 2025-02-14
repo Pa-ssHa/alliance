@@ -2,6 +2,7 @@ package ru.kozelsk.alliance.controllers.realty.admin;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,17 +17,14 @@ import ru.kozelsk.alliance.utils.model.Client;
 @RequestMapping("/realty/admin/client")
 public class ClientRealtyController {
 
-    private final MyUserDetailsService myUserDetailsService;
-    private final FeedbackRealtyService feedbackRealtyService;
     private final ClientRealtyService clientRealtyService;
 
     @Autowired
-    public ClientRealtyController(MyUserDetailsService myUserDetailsService, FeedbackRealtyService feedbackRealtyService, ClientRealtyService clientRealtyService) {
-        this.myUserDetailsService = myUserDetailsService;
-        this.feedbackRealtyService = feedbackRealtyService;
+    public ClientRealtyController(ClientRealtyService clientRealtyService) {
         this.clientRealtyService = clientRealtyService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public String allClients(Model model) {
         model.addAttribute("clients", clientRealtyService.findAll());
@@ -34,12 +32,14 @@ public class ClientRealtyController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
     public String newClientRealty(Model model) {
         model.addAttribute("newClient", new ClientRealty());
         return "realty/admin/client/new";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public String createClientRealty(@ModelAttribute("newClient") ClientRealty clientRealty,
                                      BindingResult bindingResult) {
@@ -56,6 +56,7 @@ public class ClientRealtyController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String editClientRealty(@PathVariable("id") int id, Model model) {
         ClientRealty clientRealty = clientRealtyService.findOne(id);
@@ -63,6 +64,7 @@ public class ClientRealtyController {
         return "realty/admin/client/edit";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
     public String updateClientRealty(@PathVariable("id") int id,
                                      @ModelAttribute("upClient") ClientRealty upClientRealty,
@@ -79,6 +81,7 @@ public class ClientRealtyController {
         return "redirect:/realty/admin/client";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public String deleteClientRealty(@PathVariable("id") int id) {
         clientRealtyService.delete(id);

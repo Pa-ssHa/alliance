@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.users.Role;
 import ru.kozelsk.alliance.models.users.User;
@@ -37,15 +38,33 @@ public class RegistrationController {
     }
 
     // регистрация
+/*
     @GetMapping("/registration")
     public String registration() {
         return "users/registration";
     }
+*/
 
+    @GetMapping("/registration")
+    public String registration(@RequestParam(required = false) String phone,  Model model) {
+        if (phone != null) {
+            model.addAttribute("phone", phone);
+        }
+        return "users/registration";
+    }
 
     @PostMapping("/registration")
     public String registerUser(@RequestParam String username, @RequestParam String phone,
                                @RequestParam String password) {
+
+        Optional<User> existingUser = myUserDetailsService.findByPhone(phone);
+        if (existingUser.isPresent()) {
+            return "redirect:/registration?error=phone_exists";
+        }
+
+        if(myUserDetailsService.findByPhone(phone).isPresent()) {
+            return "redirect:/registration?error=phone_exists";
+        }
 
         User newUser = new User();
         newUser.setUsername(username);
