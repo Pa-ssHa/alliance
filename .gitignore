@@ -6,6 +6,7 @@ target/
 src/main/resources/application.properties
 src/main/resources/alliance-2490a-firebase-adminsdk-c4hni-df9687e97c.json
 src/main/resources/templates/users/registration.html
+src/main/resources/templates/users/login.html
 uploads/
 
 
