@@ -6,6 +6,7 @@
     <title>Вход</title>
     <!-- Подключаем Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -52,10 +53,11 @@
             </div>
 
             <!-- Форма входа -->
-            <form th:action="@{/login}" method="post">
+<!--            <form th:action="@{/login}" method="post" >-->
+            <form id="loginForm">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Имя пользователя или телефон:</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <label for="phone" class="form-label">Телефон:</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Пароль:</label>
@@ -63,6 +65,8 @@
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Войти</button>
             </form>
+
+            <button id="reset-password-btn" class="btn btn-warning w-100">Сменить пароль</button>
 
             <!-- Ссылка на регистрацию -->
             <div class="text-center mt-3">
@@ -73,6 +77,59 @@
 </div>
 
 <!-- Подключаем Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const phoneNumber = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ phoneNumber, password })
+        });
+
+        if (response.ok) {
+            window.location.href = "/realty"; // перенаправление после успешного входа
+        } else {
+            alert("Ошибка входа! Проверьте телефон и пароль.");
+        }
+    });
+
+    // смена пароля
+    document.getElementById("reset-password-btn").addEventListener("click", function() {
+        const phoneNumber = document.getElementById("phone").value; // Берем номер из поля
+        const appVerifier = new firebase.auth.RecaptchaVerifier('reset-password-btn', {
+            size: 'invisible'
+        });
+
+        firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+            .then(confirmationResult => {
+                const code = prompt("Введите код из SMS:");
+                return confirmationResult.confirm(code);
+            })
+            .then(userCredential => {
+                Swal.fire({
+                    title: "Пароль сброшен!",
+                    text: "Теперь введите новый пароль.",
+                    input: "password",
+                    inputPlaceholder: "Введите новый пароль",
+                    confirmButtonText: "Сохранить"
+                }).then(result => {
+                    if (result.value) {
+                        userCredential.user.updatePassword(result.value)
+                            .then(() => Swal.fire("Готово!", "Пароль успешно изменен!", "success"))
+                            .catch(error => Swal.fire("Ошибка", error.message, "error"));
+                    }
+                });
+            })
+            .catch(error => Swal.fire("Ошибка", error.message, "error"));
+    });
+
+</script>
 </body>
 </html>

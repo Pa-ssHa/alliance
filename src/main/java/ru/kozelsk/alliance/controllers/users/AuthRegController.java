@@ -1,35 +1,31 @@
 package ru.kozelsk.alliance.controllers.users;
 
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.kozelsk.alliance.models.users.Role;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.users.FirebaseService;
 import ru.kozelsk.alliance.services.users.MyUserDetailsService;
 import ru.kozelsk.alliance.utils.dto.RegistrationResponse;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
-public class AuthController {
+public class AuthRegController {
 
     private final MyUserDetailsService myUserDetailsService;
     private final FirebaseService firebaseService;
 
     @Autowired
-    public AuthController(MyUserDetailsService myUserDetailsService, FirebaseService firebaseService) {
+    public AuthRegController(MyUserDetailsService myUserDetailsService, FirebaseService firebaseService) {
         this.myUserDetailsService = myUserDetailsService;
         this.firebaseService = firebaseService;
     }
 
+
+/*
     @PostMapping("/register-from-firebase")
     public ResponseEntity<RegistrationResponse> registerFromFirebase(
             @RequestBody Map<String, String> payload) {
@@ -63,17 +59,6 @@ public class AuthController {
                 return ResponseEntity.ok().body(new RegistrationResponse(false, "Phone number already in use"));
             }
 
-            // Создаем нового пользователя
-            /*User newUser = new User();
-            newUser.setPhone(phoneNumber);
-            newUser.setUsername(phoneNumber); // Используем номер телефона как имя пользователя
-            newUser.setPassword("defaultPassword"); // Установите безопасный пароль
-            newUser.setRoles(Set.of(Role.ROLE_USER));
-            newUser.setActive(true);
-            newUser.setPhoneVerified(true);
-
-            myUserDetailsService.register(newUser);*/
-
             System.out.println("Номер уникальный, можно регистрировать");
             return ResponseEntity.ok().body(new RegistrationResponse(true, "User registered successfully"));
         } catch (Exception e) {
@@ -81,6 +66,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new RegistrationResponse(false, "Error: " + e.getMessage()));
         }
     }
+*/
 
 
 /*

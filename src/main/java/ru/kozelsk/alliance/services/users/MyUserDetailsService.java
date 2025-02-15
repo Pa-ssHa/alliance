@@ -41,11 +41,38 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
 
+    // для входа по имени
+/*
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
+*/
+
+    @Override
+    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+        return userRepository.findByPhone(phoneNumber)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+    }
+
+    // для входа по телефону
+/*
+    @Override
+    public UserDetails loadUserByUsername(String phone) {
+        Optional<User> userOptional = userRepository.findByPhone(phone);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return new org.springframework.security.core.userdetails.User(
+                    user.getPhone(),
+                    user.getPassword(),
+                    user.getAuthorities()
+            );
+        } else {
+            throw new UsernameNotFoundException("Пользователь с телефоном: " + phone + " не найден");
+        }
+    }
+*/
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);

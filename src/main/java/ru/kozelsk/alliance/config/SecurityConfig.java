@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,13 +41,19 @@ public class SecurityConfig {
 //                        .requestMatchers("/realty/new", "/realty/edit/**", "/realty/delete/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .formLogin(form -> form
+                /*.formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/realty", true)
                         .permitAll()
+                )*/
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/realty")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
         return http.build();
@@ -57,7 +64,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-        @Bean
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService());
