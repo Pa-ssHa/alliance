@@ -2,9 +2,13 @@ package ru.kozelsk.alliance.models.excursion;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "tour")
 public class Tour {
@@ -30,50 +34,9 @@ public class Tour {
         this.images = images;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public List<TourImage> getImages() {
-        return images;
-    }
-
-    public void setImages(List<TourImage> images) {
-        this.images = images;
-    }
-
     @Override
     public String toString() {
         return "Tour{" +
-                "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +

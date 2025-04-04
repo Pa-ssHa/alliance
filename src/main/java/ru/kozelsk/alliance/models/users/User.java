@@ -2,8 +2,9 @@ package ru.kozelsk.alliance.models.users;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
+import org.checkerframework.common.aliasing.qual.Unique;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,47 +12,45 @@ import ru.kozelsk.alliance.models.excursion.booking.Booking;
 import ru.kozelsk.alliance.models.insurance.FeedbackInsurance;
 import ru.kozelsk.alliance.models.realty.FeedbackRealty;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-//public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull(message = "Введите имя")
-    @NotEmpty(message = "Введите имя")
-    private String username;
+    @NotBlank(message = "Email обязателен")
+    @Email(message = "Некорректный email")
+    @Column(unique = true)
+    private String email;
 
-    @NotNull(message = "Введите телефон")
-    @NotEmpty(message = "Введите телефон")
-    private String phone;
-
-    @NotNull(message = "Введите пароль")
-    @NotEmpty(message = "Введите пароль")
+    @NotBlank(message = "Пароль обязателен")
+    @Size(min = 6, message = "Пароль должен быть не менее 6 символов")
     private String password;
 
-    private String typeService;
-    private boolean active;
+    private String phone;
 
-    private boolean isRealtyFeedback;
-    private boolean isExcursionFeedback;
-    private boolean isInsuranceFeedback;
+    @NotBlank(message = "Имя не может быть пустым")
+    @Size(min = 2, max = 30, message = "Имя должно быть от 2 до 30 символов")
+    private String name;
+
+    private boolean active;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    private String verificationCode;
-    private boolean phoneVerified;
+    private boolean isRealtyFeedback;
+    private boolean isExcursionFeedback;
+    private boolean isInsuranceFeedback;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> bookings;
@@ -62,15 +61,21 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FeedbackRealty> feedbackRealties;
 
-    public User(String username, String phone, String password,
-                boolean active, Set<Role> roles, String typeService, List<Booking> bookings) {
-        this.typeService = typeService;
-        this.username = username;
-        this.phone = phone;
+    public User(String email, String password, String name, String phone, boolean active,
+                Set<Role> roles, boolean isRealtyFeedback, boolean isExcursionFeedback, boolean isInsuranceFeedback,
+                List<Booking> bookings, List<FeedbackInsurance> feedbackInsurances, List<FeedbackRealty> feedbackRealties) {
+        this.email = email;
         this.password = password;
+        this.name = name;
         this.active = active;
         this.roles = roles;
+        this.isRealtyFeedback = isRealtyFeedback;
+        this.isExcursionFeedback = isExcursionFeedback;
+        this.isInsuranceFeedback = isInsuranceFeedback;
         this.bookings = bookings;
+        this.feedbackInsurances = feedbackInsurances;
+        this.feedbackRealties = feedbackRealties;
+        this.phone = phone;
     }
 
     public User(){}
@@ -83,12 +88,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmail() {
+        return email;
     }
 
     public String getPhone() {
@@ -99,56 +104,9 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
-    public String getTypeService() {
-        return typeService;
-    }
-
-    public void setTypeService(String typeService) {
-        this.typeService = typeService;
-    }
-
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
-
-    public boolean isPhoneVerified() {
-        return phoneVerified;
-    }
-
-    public void setPhoneVerified(boolean phoneVerified) {
-        this.phoneVerified = phoneVerified;
-    }
-
-
 
     public List<Booking> getBookings() {
         return bookings;
@@ -198,6 +156,31 @@ public class User implements UserDetails {
         this.feedbackRealties = feedbackRealties;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+
     @Override
     public boolean isAccountNonExpired() {
         return true; // аккаунт не истек
@@ -215,26 +198,49 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isActive(); //аккаунт активен
+        return true; //аккаунт активен
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, name);
+    }
 
     @Override
     public String toString() {
-        return "UserAgency{" +
+        return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
-                ", phone='" + phone + '\'' +
+                ", username='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
                 ", active=" + active +
-                ", roles=" + roles +
                 '}';
     }
 }

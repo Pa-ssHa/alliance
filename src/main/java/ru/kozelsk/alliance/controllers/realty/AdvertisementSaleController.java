@@ -16,6 +16,7 @@ import ru.kozelsk.alliance.models.realty.AdvertisementSale;
 import ru.kozelsk.alliance.repositories.realty.AdvertisementSaleImageRepository;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleImageService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleService;
+import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
 
 import java.awt.*;
 import java.io.File;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,22 +33,25 @@ import java.util.UUID;
 @RequestMapping("/realty/advertisementSale")
 public class AdvertisementSaleController {
 
+    private final CheckAuthorizeService checkAuthorizeService;
     private final AdvertisementSaleService advertisementSaleService;
     private final AdvertisementSaleImageService advertisementSaleImageService;
     private final AdvertisementSaleImageRepository advertisementSaleImageRepository;
 
     @Autowired
-    public AdvertisementSaleController(AdvertisementSaleService advertisementSaleService, AdvertisementSaleImageService advertisementSaleImageService, AdvertisementSaleImageRepository advertisementSaleImageRepository) {
+    public AdvertisementSaleController(CheckAuthorizeService checkAuthorizeService, AdvertisementSaleService advertisementSaleService, AdvertisementSaleImageService advertisementSaleImageService, AdvertisementSaleImageRepository advertisementSaleImageRepository) {
+        this.checkAuthorizeService = checkAuthorizeService;
         this.advertisementSaleService = advertisementSaleService;
         this.advertisementSaleImageService = advertisementSaleImageService;
         this.advertisementSaleImageRepository = advertisementSaleImageRepository;
     }
 
     @GetMapping("/{id}")
-    public String showAdvertisementSale(@PathVariable("id") int id, Model model) {
+    public String showAdvertisementSale(@PathVariable("id") int id, Model model, Principal principal) {
         AdvertisementSale advertisementSale = advertisementSaleService.findOne(id);
         advertisementSale.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
 
+        model.addAttribute("checkAdmin", checkAuthorizeService.checkAdmin(principal));
         model.addAttribute("oneAdvertisementSale", advertisementSaleService.findOne(id));
         return "realty/advertisementSale/show";
     }

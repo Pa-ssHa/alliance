@@ -11,11 +11,13 @@ import ru.kozelsk.alliance.models.realty.*;
 import ru.kozelsk.alliance.services.realty.AdvertisementRentImageService;
 import ru.kozelsk.alliance.services.realty.AdvertisementRentService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleImageService;
+import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,18 +27,21 @@ public class AdvertisementRentController {
 
     private final AdvertisementRentService advertisementRentService;
     private final AdvertisementRentImageService advertisementRentImageService;
+    private final CheckAuthorizeService checkAuthorizeService;
 
     @Autowired
-    public AdvertisementRentController(AdvertisementRentService advertisementRentService, AdvertisementRentImageService advertisementRentImageService) {
+    public AdvertisementRentController(AdvertisementRentService advertisementRentService, AdvertisementRentImageService advertisementRentImageService, CheckAuthorizeService checkAuthorizeService) {
         this.advertisementRentService = advertisementRentService;
         this.advertisementRentImageService = advertisementRentImageService;
+        this.checkAuthorizeService = checkAuthorizeService;
     }
 
     @GetMapping("/{id}")
-    public String showAdvertisementRent(@PathVariable("id") int id, Model model) {
+    public String showAdvertisementRent(@PathVariable("id") int id, Model model, Principal principal) {
         AdvertisementRent advertisementRent = advertisementRentService.findOne(id);
         advertisementRent.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
 
+        model.addAttribute("checkAdmin", checkAuthorizeService.checkAdmin(principal));
         model.addAttribute("oneAdvertisementRent", advertisementRentService.findOne(id));
         return "realty/advertisementRent/show";
     }

@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kozelsk.alliance.models.realty.FeedbackRealty;
-import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.repositories.realty.FeedbackRealtyRepository;
-import ru.kozelsk.alliance.utils.model.Feedback;
 import ru.kozelsk.alliance.utils.services.FeedbackServiceImpl;
 
 import java.util.List;

@@ -1,0 +1,27 @@
+#logging:
+#  level:
+#    root: info
+#  file:
+#    name: logs/by.alliance.log
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - [%level] - %msg%n"
+#    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n"
+
+
+#<configuration>
+#<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+#<file>logs/by.alliance.log</file>
+#<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+#<fileNamePattern>logs/by.alliance-%d{yyyy-MM-dd}.log</fileNamePattern>
+#<maxHistory>30</maxHistory>
+#<maxSizePerFile>10MB</maxSizePerFile>
+#</rollingPolicy>
+#<encoder>
+#<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n</pattern>
+#</encoder>
+#</appender>
+#
+#<root level="info">
+#<appender-ref ref="FILE"/>
+#</root>
+#</configuration>

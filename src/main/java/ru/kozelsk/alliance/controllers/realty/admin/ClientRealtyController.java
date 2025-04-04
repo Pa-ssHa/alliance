@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.realty.admin.ClientRealty;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
 import ru.kozelsk.alliance.services.realty.admin.ClientRealtyService;
-import ru.kozelsk.alliance.services.users.MyUserDetailsService;
 import ru.kozelsk.alliance.utils.model.Client;
 
 @Controller

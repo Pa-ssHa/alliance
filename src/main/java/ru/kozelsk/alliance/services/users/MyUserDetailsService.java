@@ -1,18 +1,24 @@
 package ru.kozelsk.alliance.services.users;
 
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.collection.spi.PersistentSet;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kozelsk.alliance.models.users.Role;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.repositories.users.UserRepository;
-import ru.kozelsk.alliance.utils.MyUserDetails;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+@Slf4j
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
@@ -30,6 +36,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     public MyUserDetailsService() {}
 
     public List<User> findAll() {
@@ -40,58 +47,76 @@ public class MyUserDetailsService implements UserDetailsService {
         return userRepository.findById(id).orElse(null);
     }
 
-
-    // для входа по имени
-/*
+    // with email
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-    }
-*/
 
-    @Override
-    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
-        return userRepository.findByPhone(phoneNumber)
+        log.info("loadUserByUsername in service is starting");
+
+        User user = userRepository.findByEmail(username) // или findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        log.info("User roles: {}", user.getRoles().getClass());
+        log.info("loadUserByUsername in service is finished");
+
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail()) // или getName()
+                .password(user.getPassword())
+                .authorities(user.getAuthorities())
+                .build();
     }
 
-    // для входа по телефону
-/*
-    @Override
-    public UserDetails loadUserByUsername(String phone) {
-        Optional<User> userOptional = userRepository.findByPhone(phone);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return new org.springframework.security.core.userdetails.User(
-                    user.getPhone(),
-                    user.getPassword(),
-                    user.getAuthorities()
-            );
+    // with name
+//    @Override
+//    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+//        User user = userRepository.findByName(name)
+//                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+//
+//        return org.springframework.security.core.userdetails.User
+//                .withUsername(user.getName())
+//                .password(user.getPassword())
+//                .authorities(user.getAuthorities()) // используем authorities вместо roles
+//                .build();
+//    }
+
+    public void registerUser(User user) {
+
+        log.info("registerUser in service is starting");
+
+        if (user.getEmail().equals("passapdom@gmail.com") || user.getEmail().equals("admin@gmail.com")) {
+            user.setRoles(Collections.singleton(Role.ADMIN)); // без ROLE_
         } else {
-            throw new UsernameNotFoundException("Пользователь с телефоном: " + phone + " не найден");
+            user.setRoles(Collections.singleton(Role.USER)); // без ROLE_
         }
-    }
-*/
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+        log.info("User roles: {}", user.getRoles().getClass());
 
-    public Optional<User> findByPhone(String phone) {
-        return userRepository.findByPhone(phone);
-    }
-
-    public void register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(user.getPassword().equals("google")){
+            String randomPassword = UUID.randomUUID().toString();
+            user.setPassword(passwordEncoder.encode(randomPassword));
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
+
+        log.info("registerUser in service is finished and user was saved");
     }
 
-    public boolean checkPassword(String rawPassword, String encoderPassword) {
-        return passwordEncoder.matches(rawPassword, encoderPassword);
+//    User roles: class java.util.Collections$SingletonSet         with OAuth2
+//    User roles: class org.hibernate.collection.spi.PersistentSet    обычная
+
+
+    public Optional<User> findByName(String name) {
+        return userRepository.findByName(name);
     }
 
-    public void save(User user) {
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User save(User user) {
         userRepository.save(user);
+        return user;
     }
+
 }

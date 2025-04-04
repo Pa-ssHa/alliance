@@ -29,13 +29,16 @@ public class FeedbackRealty implements Feedback {
 
     private int rating;
 
+    private boolean isActive;
+
     public FeedbackRealty(){}
 
-    public FeedbackRealty(String text, Date dateOfPlacement, User user, int rating) {
+    public FeedbackRealty(String text, Date dateOfPlacement, User user, int rating, boolean isActive) {
         this.text = text;
         this.dateOfPlacement = dateOfPlacement;
         this.rating = rating;
         this.user = user;
+        this.isActive = isActive;
     }
 
 
@@ -96,5 +99,15 @@ public class FeedbackRealty implements Feedback {
     @Override
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

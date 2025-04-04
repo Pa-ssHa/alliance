@@ -1,15 +1,12 @@
 package ru.kozelsk.alliance.controllers.excursion;
 
-import jakarta.persistence.metamodel.ListAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.excursion.Tour;
-import ru.kozelsk.alliance.models.excursion.booking.Booking;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
@@ -17,7 +14,6 @@ import ru.kozelsk.alliance.services.excursion.booking.BookingService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/excursion/booking")
 @Controller

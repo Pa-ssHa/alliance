@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
+    <!--    CSRF    -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Экскурсии</title>
@@ -228,12 +231,12 @@
                 </div>
             </div>
         </div>
-        <div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
+        <div th:if="${checkAdmin}" class="text-center mt-3">
             <form th:method="GET" th:action="@{/excursion/tour/new}">
                 <button type="submit" class="btn btn-success">Создать экскурсию</button>
             </form>
         </div>
-        <div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
+        <div th:if="${checkAdmin}" class="text-center mt-3">
             <a th:href="@{/excursion/booking/admin}"
                class="btn btn-primary btn-custom">
                 <i class="fas fa-edit"></i> Панель управаления бронированиями

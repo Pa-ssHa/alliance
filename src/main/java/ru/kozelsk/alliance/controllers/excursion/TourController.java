@@ -16,11 +16,13 @@ import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.excursion.TourImageService;
 import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
+import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,16 +34,18 @@ public class TourController {
     private final TourService tourService;
     private final TourImageService tourImageService;
     private final BookingService bookingService;
+    private final CheckAuthorizeService checkAuthorizeService;
 
     @Autowired
-    public TourController(TourService tourService, TourImageService tourImageService, BookingService bookingService) {
+    public TourController(TourService tourService, TourImageService tourImageService, BookingService bookingService, CheckAuthorizeService checkAuthorizeService) {
         this.tourService = tourService;
         this.tourImageService = tourImageService;
         this.bookingService = bookingService;
+        this.checkAuthorizeService = checkAuthorizeService;
     }
 
     @GetMapping("/{id}")
-    public String showTour(@PathVariable("id") int id, Model model, @AuthenticationPrincipal User user) {
+    public String showTour(@PathVariable("id") int id, Model model, @AuthenticationPrincipal User user, Principal principal) {
         Tour tour = tourService.findOne(id);
         tour.getImages().sort((img1, img2) -> Boolean.compare(img2.isMain(), img1.isMain()));
         model.addAttribute("oneTour", tourService.findOne(id));
@@ -54,6 +58,8 @@ public class TourController {
         }else {
             model.addAttribute("bookings", Optional.empty());
         }
+
+        model.addAttribute("checkAdmin", checkAuthorizeService.checkAdmin(principal));
 
 //        List<Booking> bookings = bookingService.getBookingForTour(id);
 //        model.addAttribute("bookings", bookings);
