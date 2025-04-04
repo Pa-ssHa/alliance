@@ -1,145 +1,88 @@
 package ru.kozelsk.alliance.controllers.users;
 
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.users.Role;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.users.MyUserDetailsService;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.Collections;
 
+@Slf4j
 @Controller
-@RequestMapping()
-@CrossOrigin(origins = "*")
+@RequestMapping("/registration")
 public class RegistrationController {
 
-    private final MyUserDetailsService myUserDetailsService;
+    private final MyUserDetailsService userService;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public RegistrationController(MyUserDetailsService myUserDetailsService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
-        this.myUserDetailsService = myUserDetailsService;
+    public RegistrationController(MyUserDetailsService userService,
+                                  PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
     }
 
-    // регистрация
-/*
-    @GetMapping("/registration")
-    public String registration() {
-        return "users/registration";
-    }
-*/
-
-    @GetMapping("/registration")
-    public String registration(@RequestParam(required = false) String phone, Model model) {
-        if (phone != null) {
-            model.addAttribute("phone", phone);
-        }
+    @GetMapping
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new User());
         return "users/registration";
     }
 
-    @PostMapping("/registration")
-    public String registerUser(@RequestParam String username, @RequestParam String phone,
-                               @RequestParam String password) {
+    @PostMapping
+    public String registerUser(@ModelAttribute("user") @Valid User user,
+                               BindingResult bindingResult,
+                               Model model,
+                               @AuthenticationPrincipal OAuth2User oauthUser) {
 
-        Optional<User> existingUser = myUserDetailsService.findByPhone(phone);
-        if (existingUser.isPresent()) {
-            return "redirect:/registration?error=phone_exists";
+        // Проверка на существующий email
+        if (userService.findByEmail(user.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "error.user", "Этот email уже используется");
         }
 
-        if (myUserDetailsService.findByPhone(phone).isPresent()) {
-            return "redirect:/registration?error=phone_exists";
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            return "users/registration";
+        }
+
+        if (oauthUser == null) {
+            user.setPassword(user.getPassword());
+            user.setActive(true);
+            userService.registerUser(user);
+            return "redirect:/login?success";
+        } else {
+            return "redirect:/registration/api/oauth2";
+        }
+    }
+
+    @GetMapping("/api/oauth2")
+    public String registrationWithOAuth(@AuthenticationPrincipal OAuth2User oauthUser) {
+        if (oauthUser == null) {
+            return "redirect:/excursion";
+        }
+
+        log.info("Role: " + oauthUser.getAuthorities());
+
+        String email = oauthUser.getAttribute("email");
+        if (userService.findByEmail(email).isPresent()) {
+            return "redirect:/excursion";
         }
 
         User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPhone(phone);
-        newUser.setPassword(password);
+        newUser.setName(oauthUser.getAttribute("name"));
+        newUser.setEmail(email);
+        newUser.setPassword(passwordEncoder.encode("google"));
 
-        if (newUser.getUsername().equals("admin") && newUser.getPassword().equals("AdminAlliance89107091769")) {
-            newUser.setRoles(Set.of(Role.ROLE_ADMIN));
-        } else {
-            newUser.setRoles(Set.of(Role.ROLE_USER));
-        }
+        userService.registerUser(newUser);
 
-        newUser.setActive(true);
-        newUser.setPhoneVerified(true);
-
-        myUserDetailsService.register(newUser);
-
-        return "redirect:/login";
+        return "redirect:/excursion";
     }
-
-
-    @GetMapping("/login")
-    public String login() {
-        return "users/login";
-    }
-
-
-    // post запрос в контроллере AuthLoginController
-/*
-    @PostMapping("/login")
-    public String login(@RequestParam String phone, @RequestParam String password, Model model) {
-
-        Optional<User> userOptional = myUserDetailsService.findByPhone(phone);
-
-        System.out.println(userOptional);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            if (user.isPhoneVerified()) {
-                System.out.println(user);
-                try {
-                    Authentication authentication = authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(phone, password)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    return "redirect:/realty";
-                } catch (Exception e) {
-                    model.addAttribute("error", "Неверный пароль");
-                    return "users/login";
-                }
-            } else {
-                model.addAttribute("error", "номер не подтвержден");
-                return "users/login";
-            }
-        }else {
-            model.addAttribute("error", " пользователь с таким номером телефона уже есть");
-            return "users/login";
-        }
-    }
-*/
-
-
-    // тест
-/*
-    @GetMapping("/test-password")
-    @ResponseBody
-    public String testPassword() {
-        String rawPassword = "AdminAlliance89107091769"; // ваш пароль
-        String encodedPassword = "$2a$10$HFFJS1t5zrJEUbl6La2CxOir.yQxFXjCKibk8TEYCBtWburSmwTsu"; // хэш пароля из базы
-
-        if (passwordEncoder.matches(rawPassword, encodedPassword)) {
-            return "Пароль совпадает";
-        } else {
-            return "Пароль не совпадает";
-        }
-    }
-*/
 }
-
-
-
-

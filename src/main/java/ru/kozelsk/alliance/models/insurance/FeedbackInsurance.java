@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.utils.model.Feedback;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 
 @Entity
@@ -26,6 +25,8 @@ public class FeedbackInsurance implements Feedback {
     private User user;
 
     private int rating;
+
+    private boolean isActive;
 
     public FeedbackInsurance() {}
 
@@ -84,5 +85,15 @@ public class FeedbackInsurance implements Feedback {
     @Override
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }

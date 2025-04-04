@@ -6,6 +6,7 @@ import ru.kozelsk.alliance.models.realty.admin.ClientRealty;
 import ru.kozelsk.alliance.repositories.realty.admin.ClientRealtyRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientRealtyService {
@@ -36,5 +37,9 @@ public class ClientRealtyService {
     public void update(ClientRealty upClient, int id) {
         upClient.setId(id);
         realtyRepository.save(upClient);
+    }
+
+    public Optional<ClientRealty> findByPhone(String phone) {
+        return realtyRepository.findByPhone(phone);
     }
 }
