@@ -10,6 +10,8 @@ import ru.kozelsk.alliance.models.realty.FeedbackRealty;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
 import ru.kozelsk.alliance.services.users.MyUserDetailsService;
+import ru.kozelsk.alliance.utils.annotations.IsAdmin;
+import ru.kozelsk.alliance.utils.services.UserFromPrincipal;
 
 import java.security.Principal;
 import java.util.Date;
@@ -20,11 +22,13 @@ public class FeedbackRealtyController {
 
     private final FeedbackRealtyService feedbackRealtyService;
     private final MyUserDetailsService myUserDetailsService;
+    private final UserFromPrincipal userFromPrincipal;
 
     @Autowired
-    public FeedbackRealtyController(FeedbackRealtyService feedbackRealtyService, MyUserDetailsService myUserDetailsService) {
+    public FeedbackRealtyController(FeedbackRealtyService feedbackRealtyService, MyUserDetailsService myUserDetailsService, UserFromPrincipal userFromPrincipal) {
         this.feedbackRealtyService = feedbackRealtyService;
         this.myUserDetailsService = myUserDetailsService;
+        this.userFromPrincipal = userFromPrincipal;
     }
 
     @PostMapping()
@@ -36,7 +40,11 @@ public class FeedbackRealtyController {
         }
 
         // получаем текущего пользователя
-        User user = (User) ((Authentication) principal).getPrincipal();
+//        User user = (User) ((Authentication) principal).getPrincipal();
+        User user = userFromPrincipal.getUser(principal);
+        if (user == null) {
+            return "redirect:/realty";
+        }
         user.setRealtyFeedback(true);
         myUserDetailsService.save(user);
 
@@ -48,7 +56,7 @@ public class FeedbackRealtyController {
         return "redirect:/realty";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping("/delete/{id}")
     public String deleteFeedback(@PathVariable int id) {
 

@@ -49,7 +49,7 @@
                 <label for="price" class="form-label">Цена</label>
                 <input type="text" th:field="*{price}" id="price" class="form-control">
             </div>
-            <div sec:authorize="hasRole('ADMIN')">
+            <div>
                 <div class="mb-3">
                     <label for="newImages" class="form-label">Добавить новые фотографии</label>
                     <input type="file" id="newImages" name="newImages" multiple class="form-control">

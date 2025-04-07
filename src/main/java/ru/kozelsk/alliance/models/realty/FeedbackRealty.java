@@ -29,16 +29,16 @@ public class FeedbackRealty implements Feedback {
 
     private int rating;
 
-    private boolean isActive;
+    private boolean isAnon;
 
     public FeedbackRealty(){}
 
-    public FeedbackRealty(String text, Date dateOfPlacement, User user, int rating, boolean isActive) {
+    public FeedbackRealty(String text, Date dateOfPlacement, User user, int rating, boolean isAnon) {
         this.text = text;
         this.dateOfPlacement = dateOfPlacement;
         this.rating = rating;
         this.user = user;
-        this.isActive = isActive;
+        this.isAnon = isAnon;
     }
 
 
@@ -102,12 +102,12 @@ public class FeedbackRealty implements Feedback {
     }
 
     @Override
-    public boolean isActive() {
-        return isActive;
+    public boolean isAnon() {
+        return isAnon;
     }
 
     @Override
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setAnon(boolean anon) {
+        isAnon = anon;
     }
 }

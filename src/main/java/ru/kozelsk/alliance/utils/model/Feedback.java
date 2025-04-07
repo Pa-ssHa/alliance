@@ -16,6 +16,6 @@ public interface Feedback {
     void setUser(User user);
     int rating();
     void setRating(int rating);
-    boolean isActive();
-    void setActive(boolean active);
+    boolean isAnon();
+    void setAnon(boolean active);
 }

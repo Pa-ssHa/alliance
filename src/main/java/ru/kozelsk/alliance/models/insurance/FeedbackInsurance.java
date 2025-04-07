@@ -26,7 +26,7 @@ public class FeedbackInsurance implements Feedback {
 
     private int rating;
 
-    private boolean isActive;
+    private boolean isAnon;
 
     public FeedbackInsurance() {}
 
@@ -88,12 +88,12 @@ public class FeedbackInsurance implements Feedback {
     }
 
     @Override
-    public boolean isActive() {
-        return isActive;
+    public boolean isAnon() {
+        return isAnon;
     }
 
     @Override
-    public void setActive(boolean active) {
-        this.isActive = active;
+    public void setAnon(boolean anon) {
+        this.isAnon = anon;
     }
 }

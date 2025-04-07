@@ -16,6 +16,7 @@ import ru.kozelsk.alliance.models.realty.AdvertisementSale;
 import ru.kozelsk.alliance.repositories.realty.AdvertisementSaleImageRepository;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleImageService;
 import ru.kozelsk.alliance.services.realty.AdvertisementSaleService;
+import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
 
 import java.awt.*;
@@ -74,14 +75,16 @@ public class AdvertisementSaleController {
     }*/
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping("/new")
     public String newAdvertisementSale(Model model) {
         model.addAttribute("newAdvertisementSale", new AdvertisementSaleForm());
         return "realty/advertisementSale/new";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping()
     public String createAdvertisementSale(@ModelAttribute("newAdvertisementSale") AdvertisementSaleForm advertisementSaleForm,
                                           @RequestParam("images") MultipartFile[] imageFiles,
@@ -123,7 +126,8 @@ public class AdvertisementSaleController {
 
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping("/edit/{id}")
     public String editAdvertisementSale(@PathVariable("id") int id, Model model) {
         AdvertisementSale advertisementSale = advertisementSaleService.findOne(id);
@@ -134,7 +138,7 @@ public class AdvertisementSaleController {
         return "realty/advertisementSale/edit";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PatchMapping("/{id}")
     public String updateAdvertisementSale(@PathVariable("id") int id, @ModelAttribute("upAdvertisementSale") AdvertisementSale upAdvertisementSale,
                                           @RequestParam(value = "newImages", required = true) MultipartFile[] newImages,
@@ -161,7 +165,7 @@ public class AdvertisementSaleController {
     }
 
     ////////////////////// замена фото
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping("/updateImage/{id}")
     public String updateImage(@PathVariable("id") int id,
                               @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
@@ -181,7 +185,7 @@ public class AdvertisementSaleController {
         return "redirect:/realty/advertisementSale/edit/" + oldImage.getAdvertisement().getId();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping("setMainImage/{imageId}")
     public String setMainImage(@PathVariable("imageId") int imageId, @RequestParam("advertisementId") int advertisementId) throws IOException {
         advertisementSaleImageService.setMainImage(imageId, advertisementId);
@@ -192,7 +196,7 @@ public class AdvertisementSaleController {
 
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @DeleteMapping("/{id}")
     public String deleteAdvertisementSale(@PathVariable("id") int id) {
         AdvertisementSale advertisementSale = advertisementSaleService.findOne(id);
@@ -204,7 +208,7 @@ public class AdvertisementSaleController {
         return "redirect:/realty";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @DeleteMapping("/deleteImage/{id}")
     public String deleteImage(@PathVariable("id") int id) {
         int temp_id = advertisementSaleImageService.findOne(id).getAdvertisement().getId();

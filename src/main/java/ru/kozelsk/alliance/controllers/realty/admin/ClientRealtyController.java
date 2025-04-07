@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.realty.admin.ClientRealty;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
 import ru.kozelsk.alliance.services.realty.admin.ClientRealtyService;
+import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 import ru.kozelsk.alliance.utils.model.Client;
 
 @Controller
@@ -23,7 +24,7 @@ public class ClientRealtyController {
         this.clientRealtyService = clientRealtyService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping()
     public String allClients(Model model) {
         model.addAttribute("clients", clientRealtyService.findAll());
@@ -31,14 +32,14 @@ public class ClientRealtyController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping("/new")
     public String newClientRealty(Model model) {
         model.addAttribute("newClient", new ClientRealty());
         return "realty/admin/client/new";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping()
     public String createClientRealty(@ModelAttribute("newClient") ClientRealty clientRealty,
                                      BindingResult bindingResult) {
@@ -55,7 +56,7 @@ public class ClientRealtyController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping("/edit/{id}")
     public String editClientRealty(@PathVariable("id") int id, Model model) {
         ClientRealty clientRealty = clientRealtyService.findOne(id);
@@ -63,7 +64,7 @@ public class ClientRealtyController {
         return "realty/admin/client/edit";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping("/{id}")
     public String updateClientRealty(@PathVariable("id") int id,
                                      @ModelAttribute("upClient") ClientRealty upClientRealty,
@@ -80,7 +81,7 @@ public class ClientRealtyController {
         return "redirect:/realty/admin/client";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @DeleteMapping("/{id}")
     public String deleteClientRealty(@PathVariable("id") int id) {
         clientRealtyService.delete(id);

@@ -16,6 +16,7 @@ import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.excursion.TourImageService;
 import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
+import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
 
 import java.io.IOException;
@@ -68,14 +69,14 @@ public class TourController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping("/new")
     public String newTour(Model model) {
         model.addAttribute("newTour", new Tour());
         return "excursion/tour/new";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping()
     public String createTour(@ModelAttribute("newTour") TourForm tourForm,
                              @RequestParam("images")MultipartFile[] imageFiles,
@@ -119,7 +120,7 @@ public class TourController {
 
 
     //    Редактирование туров
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @GetMapping("/edit/{id}")
     public String editTour(@PathVariable("id") int id, Model model) {
         Tour tour = tourService.findOne(id);
@@ -129,7 +130,7 @@ public class TourController {
         return "excursion/tour/edit";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PatchMapping("/{id}")
     public String updateTour(@PathVariable("id") int id,
                              @ModelAttribute("upTour") Tour upTour,
@@ -157,7 +158,7 @@ public class TourController {
     }
 
     //// замена фото
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping("/updateImage/{id}")
     public String updateImage(@PathVariable("id") int id,
                               @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
@@ -177,7 +178,7 @@ public class TourController {
     }
 
     /// сделать фото главным
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @PostMapping("setMainImage/{imageId}")
     public String setMainImage(@PathVariable("imageId") int id,
                                @RequestParam("tourId") int tourId) throws IOException {
@@ -189,7 +190,7 @@ public class TourController {
 
 
     ///// удаление тура
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @DeleteMapping("/{id}")
     public String deleteTour(@PathVariable("id") int id) throws IOException {
         Tour tour = tourService.findOne(id);
@@ -202,7 +203,7 @@ public class TourController {
     }
 
     //// удаление фото
-    @PreAuthorize("hasRole('ADMIN')")
+    @IsAdmin
     @DeleteMapping("/deleteImage/{id}")
     public String deleteImage(@PathVariable("id") int id) throws IOException {
         int temp_id = tourImageService.findOne(id).getTour().getId();
