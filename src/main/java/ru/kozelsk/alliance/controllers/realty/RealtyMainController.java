@@ -43,7 +43,7 @@ public class RealtyMainController {
 
         model.addAttribute("advertisementsSale", advertisementSaleService.findAll());
         model.addAttribute("advertisementsRent", advertisementRentService.findAll());
-        model.addAttribute("feedbacksRealty", feedbackRealtyService.findAll());
+        model.addAttribute("feedbacksRealty", feedbackRealtyService.findAll().stream().filter(f -> f.isActive()));
 
 
 

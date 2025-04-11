@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование бронирования | Админ-панель</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .booking-card {
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .info-badge {
+            font-size: 0.9rem;
+            padding: 0.35em 0.65em;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <div th:insert="~{navbar.html}"></div>
+
+    <div class="card booking-card p-4 mb-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin-panel}">Админ-панель</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/booking}">Бронирования</a></li>
+            </ol>
+        </nav>
+
+        <!-- Информация о бронировании -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h2 class="mb-0" th:text="${booking.tour.title}"></h2>
+                <span class="badge bg-success fs-6" th:text="${booking.tour.price + ' руб.'}"></span>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-person-badge"></i> Информация о клиенте</h5>
+                            <div class="mb-2">
+                                <span class="fw-bold">ФИО:</span>
+                                <span th:text="${booking.user.name}"></span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-bold">Телефон:</span>
+                                <span th:text="${booking.user.phone}"></span>
+                            </div>
+                            <div th:if="${booking.user.email != null}">
+                                <span class="fw-bold">Email:</span>
+                                <span th:text="${booking.user.email}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="bi bi-calendar-check"></i> Текущее бронирование</h5>
+                            <div class="mb-2">
+                                <span class="fw-bold">Дата и время:</span>
+                                <span th:text="${#temporals.format(booking.bookingTime, 'dd.MM.yyyy HH:mm')}"></span>
+                            </div>
+                            <div th:if="${booking.description != null && !booking.description.isEmpty()}">
+                                <span class="fw-bold">Примечание:</span>
+                                <span th:text="${booking.description}"></span>
+                            </div>
+                            <div>
+                                <span class="fw-bold">Статус:</span>
+                                <span th:if="${booking.active}" class="badge bg-success info-badge">Активно</span>
+                                <span th:unless="${booking.active}" class="badge bg-secondary info-badge">Неактивно</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма редактирования -->
+        <form th:action="@{/admin/booking/edit/{bookingId}(bookingId=${booking.id})}" method="post" onsubmit="saveScrollPosition()">
+            <input type="hidden" id="scrollPosition" name="scrollPosition" value="">
+
+            <!-- Блок изменения времени -->
+            <div class="form-section">
+                <h4 class="mb-3"><i class="bi bi-clock me-2"></i> Изменить время бронирования</h4>
+
+                <!-- Форма для выбора даты -->
+                <div class="mb-4">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="date" class="form-label">Новая дата</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                <input type="text" class="form-control" id="date" name="date"
+                                       th:value="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}"
+                                       placeholder="Выберите дату">
+                            </div>
+                            <div class="form-text">Оставьте пустым, чтобы не изменять дату</div>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-outline-primary w-100" onclick="showAvailableTimes()">
+                                <i class="bi bi-search me-2"></i>Показать доступное время
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Выпадающий список для выбора времени -->
+                <div th:if="${selectedDate != null}">
+                    <div th:if="${noSlotsAvailable}" class="alert alert-warning mt-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        На выбранную дату свободных слотов нет. Пожалуйста, выберите другую дату.
+                    </div>
+                    <div th:unless="${noSlotsAvailable}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="bookingTime" class="form-label">Доступное время</label>
+                                <select class="form-select" id="bookingTime" name="bookingTime">
+                                    <option th:each="slot : ${availableSlots}"
+                                            th:value="${#temporals.format(slot, 'yyyy-MM-dd''T''HH:mm')}"
+                                            th:text="${#temporals.format(slot, 'HH:mm')}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Выбранная дата</label>
+                                <input type="text" class="form-control"
+                                       th:value="${#temporals.format(selectedDate, 'dd.MM.yyyy (EEEE)')}"
+                                       readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Блок редактирования описания -->
+            <div class="form-section">
+                <h4 class="mb-3"><i class="bi bi-pencil-square me-2"></i> Редактировать примечание</h4>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Примечание к бронированию</label>
+                    <textarea id="description" name="description" class="form-control" rows="3"
+                              th:text="${booking.description}"
+                              placeholder="Дополнительная информация..."></textarea>
+                    <div class="form-text">Максимум 500 символов</div>
+                </div>
+            </div>
+
+            <!-- Кнопки формы -->
+            <div class="d-flex justify-content-between mt-4">
+                <a th:href="@{/admin/booking}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Вернуться к списку
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle me-2"></i>Сохранить все изменения
+                </button>
+            </div>
+        </form>
+
+        <!-- Сообщение об ошибке -->
+        <div th:if="${error}" class="alert alert-danger mt-3">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i>
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Подключение Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+<script>
+    // Восстановление позиции скролла при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollPosition = new URLSearchParams(window.location.search).get('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }
+
+        flatpickr("#date", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            clickOpens: true,
+            locale: "ru",
+            disableMobile: "true"
+        });
+    });
+
+    // Сохранение позиции скролла перед отправкой формы
+    function saveScrollPosition() {
+        document.getElementById('scrollPosition').value = window.scrollY;
+        return true;
+    }
+
+    function showAvailableTimes() {
+        const dateInput = document.getElementById('date');
+        const descriptionInput = document.getElementById('description');
+        const scrollPosition = window.scrollY;
+
+        if (dateInput.value) {
+            const form = document.createElement('form');
+            form.method = 'get';
+            form.action = window.location.pathname;
+
+            // Добавляем выбранную дату
+            const dateField = document.createElement('input');
+            dateField.type = 'hidden';
+            dateField.name = 'date';
+            dateField.value = dateInput.value;
+            form.appendChild(dateField);
+
+            // Добавляем текущее описание
+            const descField = document.createElement('input');
+            descField.type = 'hidden';
+            descField.name = 'description';
+            descField.value = descriptionInput.value;
+            form.appendChild(descField);
+
+            // Добавляем позицию скролла
+            const scrollField = document.createElement('input');
+            scrollField.type = 'hidden';
+            scrollField.name = 'scrollPosition';
+            scrollField.value = scrollPosition;
+            form.appendChild(scrollField);
+
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            alert('Пожалуйста, выберите дату');
+        }
+    }
+</script>
+</body>
+</html>

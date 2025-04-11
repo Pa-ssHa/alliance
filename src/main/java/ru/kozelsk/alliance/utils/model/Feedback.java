@@ -18,4 +18,6 @@ public interface Feedback {
     void setRating(int rating);
     boolean isAnon();
     void setAnon(boolean active);
+    boolean isActive();
+    void setActive(boolean active);
 }

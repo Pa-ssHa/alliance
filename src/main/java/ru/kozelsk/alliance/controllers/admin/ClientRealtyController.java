@@ -1,4 +1,4 @@
-package ru.kozelsk.alliance.controllers.realty.admin;
+package ru.kozelsk.alliance.controllers.admin;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,9 @@ import ru.kozelsk.alliance.services.realty.admin.ClientRealtyService;
 import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 import ru.kozelsk.alliance.utils.model.Client;
 
+
 @Controller
-@RequestMapping("/realty/admin/client")
+@RequestMapping("/admin/client")
 public class ClientRealtyController {
 
     private final ClientRealtyService clientRealtyService;
@@ -28,7 +29,7 @@ public class ClientRealtyController {
     @GetMapping()
     public String allClients(Model model) {
         model.addAttribute("clients", clientRealtyService.findAll());
-        return "realty/admin/client/main";
+        return "admin/client/main";
     }
 
 
@@ -36,7 +37,7 @@ public class ClientRealtyController {
     @GetMapping("/new")
     public String newClientRealty(Model model) {
         model.addAttribute("newClient", new ClientRealty());
-        return "realty/admin/client/new";
+        return "admin/client/new";
     }
 
     @IsAdmin
@@ -44,7 +45,7 @@ public class ClientRealtyController {
     public String createClientRealty(@ModelAttribute("newClient") ClientRealty clientRealty,
                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "realty/admin/client/new";
+            return "admin/client/new";
         }
 
         if(clientRealty.getPhone() != null && !clientRealty.getPhone().startsWith("+7")) {
@@ -61,7 +62,7 @@ public class ClientRealtyController {
     public String editClientRealty(@PathVariable("id") int id, Model model) {
         ClientRealty clientRealty = clientRealtyService.findOne(id);
         model.addAttribute("upClient", clientRealty);
-        return "realty/admin/client/edit";
+        return "admin/client/edit";
     }
 
     @IsAdmin
@@ -70,7 +71,7 @@ public class ClientRealtyController {
                                      @ModelAttribute("upClient") ClientRealty upClientRealty,
                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "realty/admin/client/edit";
+            return "admin/client/edit";
         }
 
         if(upClientRealty.getPhone() != null && !upClientRealty.getPhone().startsWith("+7")) {

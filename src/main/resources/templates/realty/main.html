@@ -459,18 +459,23 @@
 </div>
 
 
+
 <!-- Кнопка для перехода в панель администратора -->
-<!--<div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">-->
-<div th:if="${checkAdmin}" class="text-center mt-3">
+<!--<div th:if="${checkAdmin}" class="text-center mt-3">
     <form th:method="GET" th:action="@{/realty/admin/client}">
         <button type="submit" class="btn btn-success">Перейти в бд клиентов</button>
     </form>
-</div>
+</div>-->
 <!-- Кнопка для перехода в панель администратора -->
-<!--<div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">-->
-<div th:if="${checkAdmin}" class="text-center mt-3">
+<!--<div th:if="${checkAdmin}" class="text-center mt-3">
     <form th:method="GET" th:action="@{/admin/users}">
         <button type="submit" class="btn btn-success">Перейти в бд пользователей</button>
+    </form>
+</div>-->
+
+<div th:if="${checkAdmin}" class="text-center mt-3">
+    <form th:method="GET" th:action="@{/admin-panel}">
+        <button type="submit" class="btn btn-success">Перейти в панель администратора</button>
     </form>
 </div>
 

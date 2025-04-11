@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Модерация отзывов</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+
+<div th:replace="navbar.html"></div>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Не опубликованные отзывы</h1>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Текст отзыва</th>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="feedback : ${feedbacksRealty}">
+                <td th:text="${feedback.text}"></td>
+                <td th:text="${feedback.user.username}"></td>
+                <td th:text="${feedback.user.phone}"></td>
+                <td>
+                    <span th:if="${feedback.active}" class="badge bg-success">Опубликован</span>
+                    <span th:unless="${feedback.active}" class="badge bg-warning text-dark">На модерации</span>
+                </td>
+                <td>
+                    <button th:data-id="${feedback.id}"
+                            class="btn btn-sm toggle-active-btn"
+                            th:classappend="${feedback.active} ? 'btn-warning' : 'btn-success'"
+                            th:text="${feedback.active} ? 'Снять с публикации' : 'Опубликовать'">
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded");
+
+        // Получаем CSRF токен
+        const token = document.querySelector('meta[name="_csrf"]').content;
+        const headerName = document.querySelector('meta[name="_csrf_header"]').content;
+
+        // Обработчики для всех кнопок
+        document.querySelectorAll('.toggle-active-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feedbackId = this.getAttribute('data-id');
+                console.log("Button clicked for feedback ID:", feedbackId);
+
+                fetch(`/admin/feedback/${feedbackId}/changeActive`, {
+                    method: 'POST',
+                    headers: {
+                        [headerName]: token,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        console.log("Success, reloading page");
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert('Ошибка: ' + error.message);
+                    });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

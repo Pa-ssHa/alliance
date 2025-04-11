@@ -29,9 +29,9 @@
         <td th:text="${client.phone}"></td>
         <td th:text="${client.description}"></td>
         <td>
-            <a th:href="@{/realty/admin/client/edit/{id}(id=${client.id})}" class="btn btn-warning">Редактировать</a>
+            <a th:href="@{/admin/client/edit/{id}(id=${client.id})}" class="btn btn-warning">Редактировать</a>
 
-            <form th:method="DELETE" th:action="@{/realty/admin/client/{id}(id=${client.id})}" style="display: inline;"
+            <form th:method="DELETE" th:action="@{/admin/client/{id}(id=${client.id})}" style="display: inline;"
                   onsubmit="return confirm('Вы уверены, что хотите удалить этого клиента?');">
                 <button type="submit" class="btn btn-danger">Удалить</button>
             </form>
@@ -40,7 +40,7 @@
     </tbody>
 </table>
 
-<a th:href="@{/realty/admin/client/new}" class="btn btn-primary">Добавить нового клиента</a>
+<a th:href="@{/templates/admin/client/new}" class="btn btn-primary">Добавить нового клиента</a>
 
 </body>
 </html>

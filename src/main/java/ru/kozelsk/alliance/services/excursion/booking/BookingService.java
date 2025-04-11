@@ -32,6 +32,26 @@ public class BookingService {
         return bookingRepository.findByUserId(userId);
     }
 
+    public List<Booking> findAll(){
+        return bookingRepository.findAll();
+    }
+
+    public Optional<Booking> findOne(int bookingId){
+        return bookingRepository.findById(bookingId);
+    }
+
+    public void save(Booking booking){
+        bookingRepository.save(booking);
+    }
+
+    public void delete(int bookingId){
+        bookingRepository.deleteById(bookingId);
+    }
+
+    public void update(Booking booking, int id){
+        booking.setId(id);
+        bookingRepository.save(booking);
+    }
     // Проверка, есть ли у человека бронирование по конкретному туру.
     // Возвращает true, если у человека есть еще не истекшее бронирование
     public boolean isBookingCurrentTourForUser(int tourId, int userId){
@@ -116,5 +136,20 @@ public class BookingService {
         }
 
         return availableSlots;
+    }
+
+    // Возвращаем список дат на 2 недели вперед и назад от текущей даты бронирования
+    public List<LocalDate> getAvailableDatesForEdit(Booking booking){
+
+        LocalDate startDate = booking.getBookingTime().toLocalDate().minusWeeks(2);
+        LocalDate endDate = booking.getBookingTime().toLocalDate().plusWeeks(2);
+
+        List<LocalDate> availableDates = new ArrayList<>();
+        LocalDate currentDate = startDate;
+        while(!currentDate.isAfter(endDate)){
+            availableDates.add(currentDate);
+            currentDate = currentDate.plusDays(1);
+        }
+        return availableDates;
     }
 }

@@ -66,14 +66,14 @@ public class RegistrationController {
     @GetMapping("/api/oauth2")
     public String registrationWithOAuth(@AuthenticationPrincipal OAuth2User oauthUser) {
         if (oauthUser == null) {
-            return "redirect:/excursion";
+            return "redirect:/realty";
         }
 
         log.info("Role: " + oauthUser.getAuthorities());
 
         String email = oauthUser.getAttribute("email");
         if (userService.findByEmail(email).isPresent()) {
-            return "redirect:/excursion";
+            return "redirect:/realty";
         }
 
         User newUser = new User();
@@ -83,6 +83,6 @@ public class RegistrationController {
 
         userService.registerUser(newUser);
 
-        return "redirect:/excursion";
+        return "redirect:/realty";
     }
 }

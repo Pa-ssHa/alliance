@@ -25,12 +25,12 @@
     </thead>
     <tbody>
     <tr th:each="user : ${users}">
-        <td th:text="${user.username}"></td>
+        <td th:text="${user.name}"></td>
         <td th:text="${user.phone}"></td>
         <td>
-            <a th:href="@{/realty/admin/client/edit/{id}(id=${user.id})}" class="btn btn-warning">Редактировать</a>
+<!--            <a th:href="@{/realty/admin/client/edit/{id}(id=${user.id})}" class="btn btn-warning">Редактировать</a>-->
 
-            <form th:method="DELETE" th:action="@{/realty/admin/client/{id}(id=${user.id})}" style="display: inline;"
+            <form th:method="DELETE" th:action="@{/admin/users/{id}(id=${user.id})}" style="display: inline;"
                   onsubmit="return confirm('Вы уверены, что хотите удалить этого клиента?');">
                 <button type="submit" class="btn btn-danger">Удалить</button>
             </form>
@@ -39,7 +39,7 @@
     </tbody>
 </table>
 
-<a th:href="@{/realty/admin/client/new}" class="btn btn-primary">Добавить нового клиента</a>
+<!--<a th:href="@{/realty/admin/client/new}" class="btn btn-primary">Добавить нового клиента</a>-->
 
 </body>
 </html>

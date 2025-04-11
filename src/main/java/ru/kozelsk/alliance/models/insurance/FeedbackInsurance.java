@@ -27,6 +27,7 @@ public class FeedbackInsurance implements Feedback {
     private int rating;
 
     private boolean isAnon;
+    private boolean isActive;
 
     public FeedbackInsurance() {}
 
@@ -96,4 +97,16 @@ public class FeedbackInsurance implements Feedback {
     public void setAnon(boolean anon) {
         this.isAnon = anon;
     }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.isActive = active;
+    }
+
+
 }

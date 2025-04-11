@@ -10,7 +10,9 @@ import ru.kozelsk.alliance.models.excursion.Tour;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
+import ru.kozelsk.alliance.utils.services.UserFromPrincipal;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,11 +23,13 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final TourService tourService;
+    private final UserFromPrincipal userFromPrincipal;
 
     @Autowired
-    public BookingController(BookingService bookingService, TourService tourService) {
+    public BookingController(BookingService bookingService, TourService tourService, UserFromPrincipal userFromPrincipal) {
         this.bookingService = bookingService;
         this.tourService = tourService;
+        this.userFromPrincipal = userFromPrincipal;
     }
 
     @GetMapping("/{tourId}")
@@ -35,22 +39,15 @@ public class BookingController {
         Tour tour = tourService.findOne(tourId);
         model.addAttribute("tour", tour);
 
-        /*if(date != null) {
-            //получаем доступные верменные слоты
-            List<LocalDateTime> availableSlots = bookingService.getAvailableTimeSlots(tourId, date);
-
-            LocalDateTime now = LocalDateTime.now();
-            List<LocalDateTime> futureSlots = availableSlots.stream()
-                            .filter(slot -> slot.isAfter(now))
-                            .collect(Collectors.toList());
-
-            model.addAttribute("availableSlots", futureSlots);
-            model.addAttribute("noSlotsAvailable", futureSlots.isEmpty());
-        }*/
-
         if(date != null) {
             List<LocalDateTime> availableSlots = bookingService.getAvailableTimeSlots(date);
-            model.addAttribute("availableSlots", availableSlots);
+            if (!availableSlots.isEmpty()) {
+                model.addAttribute("availableSlots", availableSlots);
+            } else {
+                model.addAttribute("noSlotsAvailable", true);
+            }
+        } else {
+            model.addAttribute("error", "Не выбрана дата бронирования");
         }
 
         model.addAttribute("selectedDate", date);
@@ -60,7 +57,7 @@ public class BookingController {
     @PostMapping("/{tourId}")
     public String bookTour(@PathVariable int tourId,
                            @RequestParam LocalDateTime bookingTime,
-                           @AuthenticationPrincipal User user,
+                           Principal principal,
                            Model model) {
         Tour tour = tourService.findOne(tourId);
 
@@ -73,7 +70,7 @@ public class BookingController {
 
         // проверка наличия свободного времени
         if(bookingService.isTimeSlotAvailable(bookingTime)) {
-            bookingService.createBooking(tour, user, bookingTime);
+            bookingService.createBooking(tour, userFromPrincipal.getUser(principal), bookingTime);
             return "redirect:/excursion/tour/" + tourId;
         } else {
             model.addAttribute("error", "Выбранное время уже занято");

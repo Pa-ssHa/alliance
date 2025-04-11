@@ -30,6 +30,7 @@ public class FeedbackRealty implements Feedback {
     private int rating;
 
     private boolean isAnon;
+    private boolean isActive;
 
     public FeedbackRealty(){}
 
@@ -109,5 +110,14 @@ public class FeedbackRealty implements Feedback {
     @Override
     public void setAnon(boolean anon) {
         isAnon = anon;
+    }
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }

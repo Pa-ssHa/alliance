@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "booking")
-public class Booking {
+public class Booking implements Comparable<Booking> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    private boolean isActive;
+
+    private String description;
 
     private LocalDateTime bookingTime;
 
@@ -62,5 +66,27 @@ public class Booking {
 
     public void setBookingTime(LocalDateTime bookingTime) {
         this.bookingTime = bookingTime;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    @Override
+    public int compareTo(Booking other) {
+        return this.bookingTime.compareTo(other.bookingTime);
     }
 }
