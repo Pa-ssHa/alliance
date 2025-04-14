@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.excursion.booking.Booking;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
+import ru.kozelsk.alliance.services.excursion.booking.UnavailablePeriodService;
 import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 
 import javax.swing.text.html.parser.Entity;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class BookingAdminRestController {
 
     private final BookingService bookingService;
+    private final UnavailablePeriodService unavailablePeriodService;
 
     @Autowired
-    public BookingAdminRestController(BookingService bookingService) {
+    public BookingAdminRestController(BookingService bookingService, UnavailablePeriodService unavailablePeriodService) {
         this.bookingService = bookingService;
+        this.unavailablePeriodService = unavailablePeriodService;
     }
 
     @PostMapping("/{id}/changeActive")
@@ -67,5 +70,15 @@ public class BookingAdminRestController {
         }
 
         return slots;
+    }
+
+    @PostMapping("unavailable/{id}/delete")
+    public ResponseEntity<?> deleteBookingUnavailable(@PathVariable int id) {
+
+        if (unavailablePeriodService.findOne(id).isPresent()) {
+            unavailablePeriodService.delete(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

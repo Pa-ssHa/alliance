@@ -10,12 +10,50 @@
     <style>
         .booking-card {
             border-left: 4px solid;
+            transition: all 0.2s ease;
+        }
+        .booking-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .booking-card.active {
             border-left-color: #198754;
         }
         .booking-card.inactive {
             border-left-color: #ffc107;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .badge-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .user-info {
+            background-color: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .action-buttons {
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
@@ -25,42 +63,56 @@
 <div th:insert="~{navbar.html}" class="navbar-custom"></div>
 
 <div class="container mt-4">
-    <h1 class="mb-4"><i class="bi bi-calendar-check me-2"></i>Бронирование экскурсий</h1>
+    <div class="header-actions">
+        <h1 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Бронирование экскурсий</h1>
+        <div class="action-buttons">
+            <a href="/admin-panel" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Назад
+            </a>
+            <a th:href="@{/admin/booking/unavailable}" class="btn btn-success">
+                <i class="bi bi-plus-circle me-1"></i>Недоступные слоты
+            </a>
+        </div>
+    </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Список бронирований</h5>
-            <div class="mt-2">
-                <span class="badge bg-primary">Всего: <span th:text="${bookings.size()}"></span></span>
-                <span class="badge bg-success ms-2">Подтверждено: <span th:text="${activeCount}"></span></span>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Список бронирований</h5>
+                <div class="badge-container mt-2 mt-md-0">
+                    <span class="badge bg-primary">Всего: <span th:text="${bookings.size()}"></span></span>
+                    <span class="badge bg-success">Подтверждено: <span th:text="${activeCount}"></span></span>
+                </div>
             </div>
         </div>
 
         <div class="card-body">
             <div th:if="${bookings == null or bookings.isEmpty()}" class="alert alert-info">
-                Нет активных бронирований
+                <i class="bi bi-info-circle me-2"></i>Нет активных бронирований
             </div>
 
             <div th:each="booking : ${bookings}" class="card mb-3 booking-card"
                  th:classappend="${booking.active} ? 'active' : 'inactive'">
                 <div class="card-body">
-                    <h5 th:text="${booking.tour.title}">Название тура</h5>
-                    <p class="text-muted">
+                    <h5 class="card-title" th:text="${booking.tour.title}">Название тура</h5>
+                    <p class="text-muted mb-3">
                         <i class="bi bi-calendar-date me-2"></i>
                         <span th:text="${#temporals.format(booking.bookingTime, 'dd.MM.yyyy HH:mm')}"></span>
                     </p>
 
-                    <div class="mb-2">
-                        <i class="bi bi-person me-2"></i>
-                        <span th:text="${booking.user.name}"></span>
-                    </div>
-                    <div class="mb-2">
-                        <i class="bi bi-person-vcard me-2"></i>
-                        <span th:text="${booking.user.email}"></span>
-                    </div>
-                    <div class="mb-2">
-                        <i class="bi bi-telephone me-2"></i>
-                        <span th:text="${booking.user.phone}"></span>
+                    <div class="user-info">
+                        <div class="mb-2">
+                            <i class="bi bi-person me-2"></i>
+                            <span th:text="${booking.user.name}"></span>
+                        </div>
+                        <div class="mb-2">
+                            <i class="bi bi-person-vcard me-2"></i>
+                            <span th:text="${booking.user.email}"></span>
+                        </div>
+                        <div class="mb-0">
+                            <i class="bi bi-telephone me-2"></i>
+                            <span th:text="${booking.user.phone}"></span>
+                        </div>
                     </div>
 
                     <div class="mb-3" th:if="${booking.description}">
@@ -68,15 +120,16 @@
                         <span th:text="${booking.description}"></span>
                     </div>
 
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end flex-wrap gap-2">
                         <button th:data-id="${booking.id}"
-                                class="btn btn-sm me-2 toggle-active-btn"
+                                class="btn btn-sm toggle-active-btn"
                                 th:classappend="${booking.active} ? 'btn-warning' : 'btn-success'">
-                            <span th:text="${booking.active} ? 'Отменить' : 'Подтвердить'"></span>
+                            <i class="bi" th:classappend="${booking.active} ? 'bi-x-circle' : 'bi-check-circle'"></i>
+                            <span th:text="${booking.active} ? ' Отменить' : ' Подтвердить'"></span>
                         </button>
 
                         <a th:href="@{/admin/booking/edit/{id}(id=${booking.id})}"
-                           class="btn btn-sm btn-primary me-2">
+                           class="btn btn-sm btn-primary">
                             <i class="bi bi-pencil"></i> Редактировать
                         </a>
 
@@ -95,17 +148,17 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM fully loaded");
-
         // Получаем CSRF токен
         const token = document.querySelector('meta[name="_csrf"]').content;
         const headerName = document.querySelector('meta[name="_csrf_header"]').content;
 
-        // Обработчики для всех кнопок
+        // Обработчики для кнопок изменения статуса
         document.querySelectorAll('.toggle-active-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const bookingId = this.getAttribute('data-id');
-                console.log("Button clicked for feedback ID:", bookingId);
+                const action = this.textContent.trim();
+
+                if (!confirm(`Вы уверены, что хотите ${action.toLowerCase()} это бронирование?`)) return;
 
                 fetch(`/admin/booking/${bookingId}/changeActive`, {
                     method: 'POST',
@@ -116,10 +169,7 @@
                     credentials: 'include'
                 })
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("Success, reloading page");
+                        if (!response.ok) throw new Error('Network response was not ok');
                         window.location.reload();
                     })
                     .catch(error => {
@@ -129,10 +179,12 @@
             });
         });
 
+        // Обработчики для кнопок удаления
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const bookingId = this.getAttribute('data-id');
-                console.log("Button clicked for feedback ID:", bookingId);
+
+                if (!confirm('Вы уверены, что хотите удалить это бронирование?')) return;
 
                 fetch(`/admin/booking/${bookingId}/delete`, {
                     method: 'POST',
@@ -143,10 +195,7 @@
                     credentials: 'include'
                 })
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("Success, reloading page");
+                        if (!response.ok) throw new Error('Network response was not ok');
                         window.location.reload();
                     })
                     .catch(error => {

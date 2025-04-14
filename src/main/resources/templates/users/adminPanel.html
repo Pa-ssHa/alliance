@@ -8,8 +8,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Административная панель</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      --users-color: #6610f2;
+      --feedback-color: #20c997;
+      --booking-color: #fd7e14;
+      --courses-color: #dc3545;
+      --realty-clients: #6f42c1;
+      --insurance-clients: #0dcaf0;
+      --courses-clients: #ffc107;
+      --tours-clients: #fd7e14;
+    }
+
     .admin-card {
       transition: all 0.3s ease;
       border-radius: 15px;
@@ -17,121 +29,291 @@
       border: none;
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
       height: 100%;
+      position: relative;
+      overflow: hidden;
     }
+
+    .admin-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--card-color);
+    }
+
     .admin-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
     }
+
     .card-icon {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: var(--card-color);
     }
+
     .card-title {
       font-weight: 600;
       font-size: 1.25rem;
+      margin-bottom: 0.5rem;
     }
+
+    .card-text {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
     .admin-header {
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      background: var(--primary-gradient);
       color: white;
       border-radius: 0 0 20px 20px;
+      padding: 1.5rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     .btn-logout {
       border: 2px solid white;
       color: white;
       background: transparent;
+      transition: all 0.3s ease;
     }
+
     .btn-logout:hover {
       background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .section-title {
+      position: relative;
+      padding-bottom: 0.5rem;
+      margin: 2rem 0 1.5rem;
+      font-weight: 600;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--section-color);
+      border-radius: 3px;
+    }
+
+    /* Стили для карточек управления */
+    .card-users {
+      --card-color: var(--users-color);
+    }
+
+    .card-feedback {
+      --card-color: var(--feedback-color);
+    }
+
+    .card-booking {
+      --card-color: var(--booking-color);
+    }
+
+    .card-courses {
+      --card-color: var(--courses-color);
+    }
+
+    /* Стили для карточек клиентов */
+    .card-realty-clients {
+      --card-color: var(--realty-clients);
+    }
+
+    .card-insurance-clients {
+      --card-color: var(--insurance-clients);
+    }
+
+    .card-courses-clients {
+      --card-color: var(--courses-clients);
+    }
+
+    .card-tours-clients {
+      --card-color: var(--tours-clients);
+    }
+
+    /* Цвета секций */
+    .section-management {
+      --section-color: var(--users-color);
+    }
+
+    .section-clients {
+      --section-color: var(--realty-clients);
     }
   </style>
 </head>
 <body>
 <!-- Шапка админки -->
-<header class="admin-header py-4 mb-5">
+<header class="admin-header">
   <div class="container">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
       <h1 class="m-0">
-        <i class="fas fa-user-shield me-2"></i>Административная панель
+        <i class="bi bi-shield-lock me-2"></i>Административная панель
       </h1>
-      <form th:action="@{/realty}" method="get">
-        <button type="submit" class="btn btn-logout">
-          <i class="fas fa-sign-out-alt me-1"></i> Назад
-        </button>
-      </form>
+      <div class="d-flex gap-2 mt-2 mt-md-0">
+        <a href="/realty" class="btn btn-logout">
+          <i class="bi bi-arrow-left me-1"></i> Назад
+        </a>
+<!--        <a href="#" class="btn btn-light">-->
+<!--          <i class="bi bi-question-circle me-1"></i> Помощь-->
+<!--        </a>-->
+      </div>
     </div>
   </div>
 </header>
 
 <!-- Основной контент -->
-<main class="container">
-  <div class="row g-4">
-    <!-- Карточка клиентов -->
-    <div class="col-md-6 col-lg-3">
-      <a th:href="@{/admin/client}" class="text-decoration-none">
-        <div class="card admin-card text-center py-4">
-          <div class="card-body">
-            <div class="card-icon text-primary">
-              <i class="fas fa-users"></i>
+<main class="container mb-5">
+  <!-- Управление системой -->
+  <div class="section-management">
+    <h3 class="section-title">Управление системой</h3>
+    <div class="row g-4">
+      <!-- Пользователи -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/users}" class="text-decoration-none">
+          <div class="card admin-card card-users text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <h3 class="card-title">Пользователи</h3>
+              <p class="card-text">Управление учетными записями</p>
             </div>
-            <h3 class="card-title">Клиенты</h3>
-            <p class="text-muted">Управление базой клиентов</p>
           </div>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <!-- Карточка пользователей -->
-    <div class="col-md-6 col-lg-3">
-      <a th:href="@{/admin/users}" class="text-decoration-none">
-        <div class="card admin-card text-center py-4">
-          <div class="card-body">
-            <div class="card-icon text-success">
-              <i class="fas fa-user-cog"></i>
+      <!-- Отзывы -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/feedback}" class="text-decoration-none">
+          <div class="card admin-card card-feedback text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-chat-square-text-fill"></i>
+              </div>
+              <h3 class="card-title">Отзывы</h3>
+              <p class="card-text">Модерация отзывов</p>
             </div>
-            <h3 class="card-title">Пользователи</h3>
-            <p class="text-muted">Управление учетными записями</p>
           </div>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <!-- Карточка отзывов -->
-    <div class="col-md-6 col-lg-3">
-      <a th:href="@{/admin/feedback}" class="text-decoration-none">
-        <div class="card admin-card text-center py-4">
-          <div class="card-body">
-            <div class="card-icon text-warning">
-              <i class="fas fa-comment-dots"></i>
+      <!-- Бронирование экскурсий -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/booking}" class="text-decoration-none">
+          <div class="card admin-card card-booking text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-signpost-split-fill"></i>
+              </div>
+              <h3 class="card-title">Экскурсии</h3>
+              <p class="card-text">Бронирование туров</p>
             </div>
-            <h3 class="card-title">Отзывы</h3>
-            <p class="text-muted">Модерация отзывов</p>
           </div>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <!-- Карточка бронирований -->
-    <div class="col-md-6 col-lg-3">
-      <a th:href="@{/admin/booking}" class="text-decoration-none">
-        <div class="card admin-card text-center py-4">
-          <div class="card-body">
-            <div class="card-icon text-danger">
-              <i class="fas fa-calendar-check"></i>
+      <!-- Бронирование курсовых -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/courses}" class="text-decoration-none">
+          <div class="card admin-card card-courses text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-journal-bookmark-fill"></i>
+              </div>
+              <h3 class="card-title">Курсовые</h3>
+              <p class="card-text">Бронирование занятий</p>
             </div>
-            <h3 class="card-title">Бронирования</h3>
-            <p class="text-muted">Управление записями</p>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
     </div>
   </div>
 
+  <!-- Клиенты -->
+  <div class="section-clients">
+    <h3 class="section-title">Клиенты</h3>
+    <div class="row g-4">
+      <!-- Клиенты недвижимости -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/client-realty}" class="text-decoration-none">
+          <div class="card admin-card card-realty-clients text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-house-door"></i>
+              </div>
+              <h3 class="card-title">Недвижимость</h3>
+              <p class="card-text">Клиенты по недвижимости</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Клиенты страхования -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/client-insurance}" class="text-decoration-none">
+          <div class="card admin-card card-insurance-clients text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <h3 class="card-title">Страхование</h3>
+              <p class="card-text">Клиенты по страхованию</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Клиенты курсовых -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/client-courses}" class="text-decoration-none">
+          <div class="card admin-card card-courses-clients text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-journal-text"></i>
+              </div>
+              <h3 class="card-title">Курсовые</h3>
+              <p class="card-text">Клиенты по курсам</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Клиенты экскурсий -->
+      <div class="col-md-6 col-lg-3">
+        <a th:href="@{/admin/client-tours}" class="text-decoration-none">
+          <div class="card admin-card card-tours-clients text-center py-4">
+            <div class="card-body">
+              <div class="card-icon">
+                <i class="bi bi-signpost"></i>
+              </div>
+              <h3 class="card-title">Экскурсии</h3>
+              <p class="card-text">Клиенты по экскурсиям</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </main>
 
 <!-- Подвал -->
-<footer class="mt-5 py-3 bg-light">
-  <div class="container text-center text-muted">
-    <small>Административная панель © 2025</small>
+<footer class="py-4 bg-light mt-auto">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div class="mb-3 mb-md-0">
+        <small class="text-muted">Административная панель © 2025</small>
+      </div>
+      <div class="d-flex gap-3">
+        <a href="#" class="text-muted small"><i class="bi bi-envelope me-1"></i> Поддержка</a>
+        <a href="#" class="text-muted small"><i class="bi bi-file-text me-1"></i> Документация</a>
+      </div>
+    </div>
   </div>
 </footer>
 

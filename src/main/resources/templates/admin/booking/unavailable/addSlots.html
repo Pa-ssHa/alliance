@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление недоступных слотов | Админ-панель</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .booking-card {
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .info-badge {
+            font-size: 0.9rem;
+            padding: 0.35em 0.65em;
+        }
+        /* Стиль для множественного select */
+        select[multiple] {
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <div th:insert="~{navbar.html}"></div>
+
+    <div class="card booking-card p-4 mb-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin-panel}">Админ-панель</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/booking}">Бронирования</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/booking/unavailable}">Все недоступные</a></li>
+            </ol>
+        </nav>
+
+        <!-- Форма редактирования -->
+        <form th:action="@{/admin/booking/unavailable/add}" method="post" id="unavailableForm">
+            <input type="hidden" name="unavailableTimeList" id="unavailableTimeList">
+            <input type="hidden" id="scrollPosition" name="scrollPosition" value="">
+
+            <!-- Блок изменения времени -->
+            <div class="form-section">
+                <h4 class="mb-3"><i class="bi bi-clock me-2"></i> Добавить недоступное время</h4>
+
+                <!-- Форма для выбора даты -->
+                <div class="mb-4">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="date" class="form-label">Дата</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                <input type="text" class="form-control" id="date" name="date"
+                                       th:value="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}"
+                                       placeholder="Выберите дату">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-outline-primary w-100" onclick="showAvailableTimes()">
+                                <i class="bi bi-search me-2"></i>Показать доступное время
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Выпадающий список для выбора времени -->
+                <div th:if="${selectedDate != null}">
+                    <div th:if="${noSlotsAvailable}" class="alert alert-warning mt-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        На выбранную дату свободных слотов нет.
+                    </div>
+                    <div th:unless="${noSlotsAvailable}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="bookingTime" class="form-label">Доступное время</label>
+                                <div class="mb-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="selectAllSlots()">
+                                        Выбрать все
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="deselectAllSlots()">
+                                        Снять выделение
+                                    </button>
+                                </div>
+                                <select class="form-select" id="bookingTime" name="bookingTime" multiple size="8">
+                                    <option th:each="slot : ${availableSlots}"
+                                            th:value="${#temporals.format(slot, 'yyyy-MM-dd''T''HH:mm')}"
+                                            th:text="${#temporals.format(slot, 'HH:mm')}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Выбранная дата</label>
+                                <input type="text" class="form-control"
+                                       th:value="${#temporals.format(selectedDate, 'dd.MM.yyyy (EEEE)')}"
+                                       readonly>
+                                <div class="form-text mt-2">
+                                    Для множественного выбора:<br>
+                                    - Удерживайте Ctrl (Windows) или Command (Mac)<br>
+                                    - Или используйте кнопки выше
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопки формы -->
+            <div class="d-flex justify-content-between mt-4">
+                <a th:href="@{/admin/booking/unavailable}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Вернуться к списку
+                </a>
+                <button type="button" class="btn btn-success" onclick="prepareAndSubmit()">
+                    <i class="bi bi-check-circle me-2"></i>Заблокировать выбранное
+                </button>
+            </div>
+        </form>
+
+        <!-- Сообщение об ошибке -->
+        <div th:if="${error}" class="alert alert-danger mt-3">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i>
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Подключение Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+<script>
+    // Выделить все слоты
+    function selectAllSlots() {
+        const select = document.getElementById('bookingTime');
+        for (let i = 0; i < select.options.length; i++) {
+            select.options[i].selected = true;
+        }
+    }
+
+    // Снять выделение
+    function deselectAllSlots() {
+        const select = document.getElementById('bookingTime');
+        for (let i = 0; i < select.options.length; i++) {
+            select.options[i].selected = false;
+        }
+    }
+
+    // Подготовка и отправка формы
+    function prepareAndSubmit() {
+        const selectedSlots = [];
+        const select = document.getElementById('bookingTime');
+
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].selected) {
+                selectedSlots.push(select.options[i].value);
+            }
+        }
+
+        if (selectedSlots.length === 0) {
+            alert('Пожалуйста, выберите хотя бы один временной слот');
+            return;
+        }
+
+        document.getElementById('unavailableTimeList').value = selectedSlots.join(',');
+        document.getElementById('scrollPosition').value = window.scrollY;
+        document.getElementById('unavailableForm').submit();
+    }
+
+    // Показать доступные слоты
+    function showAvailableTimes() {
+        const dateInput = document.getElementById('date');
+        const scrollPosition = window.scrollY;
+
+        if (dateInput.value) {
+            const form = document.createElement('form');
+            form.method = 'get';
+            form.action = window.location.pathname;
+
+            const dateField = document.createElement('input');
+            dateField.type = 'hidden';
+            dateField.name = 'date';
+            dateField.value = dateInput.value;
+            form.appendChild(dateField);
+
+            const scrollField = document.createElement('input');
+            scrollField.type = 'hidden';
+            scrollField.name = 'scrollPosition';
+            scrollField.value = scrollPosition;
+            form.appendChild(scrollField);
+
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            alert('Пожалуйста, выберите дату');
+        }
+    }
+
+    // Восстановление позиции скролла при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollPosition = new URLSearchParams(window.location.search).get('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }
+
+        flatpickr("#date", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            clickOpens: true,
+            locale: "ru",
+            disableMobile: "true"
+        });
+    });
+</script>
+</body>
+</html>

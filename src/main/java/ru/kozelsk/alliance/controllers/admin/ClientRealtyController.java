@@ -15,7 +15,7 @@ import ru.kozelsk.alliance.utils.model.Client;
 
 
 @Controller
-@RequestMapping("/admin/client")
+@RequestMapping("/admin/client-realty")
 public class ClientRealtyController {
 
     private final ClientRealtyService clientRealtyService;

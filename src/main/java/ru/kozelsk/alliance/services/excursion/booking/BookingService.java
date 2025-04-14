@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kozelsk.alliance.models.excursion.Tour;
 import ru.kozelsk.alliance.models.excursion.booking.Booking;
+import ru.kozelsk.alliance.models.excursion.booking.UnavailablePeriod;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.repositories.excursion.booking.BookingRepository;
 
@@ -13,15 +14,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+    private final UnavailablePeriodService unavailablePeriodService;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository) {
+    public BookingService(BookingRepository bookingRepository, UnavailablePeriodService unavailablePeriodService) {
         this.bookingRepository = bookingRepository;
+        this.unavailablePeriodService = unavailablePeriodService;
     }
 
     public List<Booking> getBookingForTour(int tourId){
@@ -122,8 +126,28 @@ public class BookingService {
         return busyTimeslots;
     }
 
-    // выдает список свободных слотов с 10 до 17.30
+    // выдает список свободных слотов с 10 до 17.30 с учетом занятых админом слотов
     public List<LocalDateTime> getAvailableTimeSlots(LocalDate date){
+        List<LocalDateTime> availableSlots = new ArrayList<>();
+        LocalDateTime startTime = date.atTime(10,0);
+        LocalDateTime endTime = date.atTime(17,30);
+
+        while(startTime.isBefore(endTime)){
+            if(isTimeSlotAvailable(startTime)) {
+                availableSlots.add(startTime);
+            }
+            startTime = startTime.plusHours(1).plusMinutes(30);
+        }
+
+        return availableSlots.stream()
+                .filter(slot -> unavailablePeriodService.isTimeSlotAvailable(slot))
+                .collect(Collectors.toList());
+
+//        return availableSlots;
+    }
+
+    // выдает список свободных слотов с 10 до 17.30 без учета занятых админом слотов
+    public List<LocalDateTime> getAvailableTimeSlotsWithoutUnavailable(LocalDate date){
         List<LocalDateTime> availableSlots = new ArrayList<>();
         LocalDateTime startTime = date.atTime(10,0);
         LocalDateTime endTime = date.atTime(17,30);
@@ -137,6 +161,8 @@ public class BookingService {
 
         return availableSlots;
     }
+
+
 
     // Возвращаем список дат на 2 недели вперед и назад от текущей даты бронирования
     public List<LocalDate> getAvailableDatesForEdit(Booking booking){

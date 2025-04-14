@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Недоступные брони</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .day-card {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #0d6efd;
+        }
+        .time-slot {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-title {
+            margin-bottom: 0;
+        }
+        @media (max-width: 576px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .action-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Навигационная панель (navbar) -->
+<div th:insert="~{navbar.html}" class="navbar-custom"></div>
+
+<div class="container mt-4">
+    <div class="header-actions">
+        <h1 class="page-title"><i class="bi bi-calendar-x me-2"></i>Недоступные слоты</h1>
+
+        <div class="action-buttons d-flex gap-2">
+            <a th:href="@{/admin/booking}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Назад
+            </a>
+            <a th:href="@{/admin/booking/unavailable/add}" class="btn btn-success">
+                <i class="bi bi-plus-circle me-1"></i>Добавить
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Список занятых слотов</h5>
+        </div>
+
+        <div class="card-body">
+            <div th:if="${unavailablePeriods == null or unavailablePeriods.isEmpty()}" class="alert alert-info">
+                Нет занятых дат
+            </div>
+
+            <!-- Внешний цикл по дням -->
+            <div th:each="dayEntry : ${unavailablePeriods}" class="card mb-3 day-card">
+                <div class="card-body">
+                    <!-- Заголовок с датой -->
+                    <h5 class="card-title">
+                        <i class="bi bi-calendar-day me-2"></i>
+                        <span th:text="${#temporals.format(dayEntry.key, 'EEEE, dd.MM.yyyy')}">Дата события</span>
+                        <span class="badge bg-light text-dark ms-2" th:text="${dayEntry.value.size()} + ' сл.'"></span>
+                    </h5>
+
+                    <!-- Внутренний цикл по слотам для этого дня -->
+                    <div th:each="period : ${dayEntry.value}" class="time-slot">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="bi bi-clock me-2"></i>
+                                <span th:text="${#temporals.format(period.time, 'HH:mm')}"></span>
+                            </span>
+                            <button th:data-id="${period.id}" class="btn btn-sm btn-outline-danger delete-btn">
+                                <i class="bi bi-trash"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Получаем CSRF токен
+        const token = document.querySelector('meta[name="_csrf"]').content;
+        const headerName = document.querySelector('meta[name="_csrf_header"]').content;
+
+        // Обработчики для всех кнопок
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!confirm('Вы уверены, что хотите удалить этот слот?')) return;
+
+                const unavailableId = this.getAttribute('data-id');
+
+                fetch(`/admin/booking/unavailable/${unavailableId}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        [headerName]: token,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert('Ошибка: ' + error.message);
+                    });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
