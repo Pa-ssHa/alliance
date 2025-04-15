@@ -36,9 +36,8 @@ public class SecurityConfig {
                )
 
                 .authorizeRequests(auth -> auth
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/excursion/**").hasRole("ADMIN")
 //                        .requestMatchers("/realty/new", "/realty/edit/**", "/realty/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/temp").authenticated()
                         .requestMatchers("/realty/new", "/realty/edit/**", "/realty/delete/**").authenticated()
                         .anyRequest().permitAll()
                 )
