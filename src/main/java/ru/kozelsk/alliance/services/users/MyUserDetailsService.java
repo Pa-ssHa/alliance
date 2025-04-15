@@ -83,6 +83,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
         log.info("registerUser in service is starting");
 
+        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return;
+        }
+
         if (user.getEmail().equals("passapdom@gmail.com") || user.getEmail().equals("admin@gmail.com")) {
             user.setRoles(Collections.singleton(Role.ADMIN)); // без ROLE_
         } else {

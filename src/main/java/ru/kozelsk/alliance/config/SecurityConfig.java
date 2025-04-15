@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import ru.kozelsk.alliance.components.MyCustomAuthenticationSuccessHandler;
 import ru.kozelsk.alliance.services.users.MyUserDetailsService;
 
 
@@ -51,8 +52,10 @@ public class SecurityConfig {
                 )
                .oauth2Login(oauth -> oauth
                        .loginPage("/login")
-                       .defaultSuccessUrl("/registration/api/oauth2", true)
+//                       .defaultSuccessUrl("/registration/api/oauth2", true)
+                       .successHandler(myCustomAuthenticationSuccessHandler())
                )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/realty")
@@ -67,6 +70,11 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public MyCustomAuthenticationSuccessHandler myCustomAuthenticationSuccessHandler(){
+        return new MyCustomAuthenticationSuccessHandler();
     }
 
 

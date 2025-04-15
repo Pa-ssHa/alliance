@@ -22,13 +22,10 @@ import java.util.Collections;
 public class RegistrationController {
 
     private final MyUserDetailsService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationController(MyUserDetailsService userService,
-                                  PasswordEncoder passwordEncoder) {
+    public RegistrationController(MyUserDetailsService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -53,36 +50,41 @@ public class RegistrationController {
             return "users/registration";
         }
 
-        if (oauthUser == null) {
-            user.setPassword(user.getPassword());
-            user.setActive(true);
-            userService.registerUser(user);
-            return "redirect:/login?success";
-        } else {
-            return "redirect:/registration/api/oauth2";
-        }
+        user.setPassword(user.getPassword());
+        user.setActive(true);
+        userService.registerUser(user);
+        return "redirect:/login?success";
+
+//        if (oauthUser == null) {
+//            user.setPassword(user.getPassword());
+//            user.setActive(true);
+//            userService.registerUser(user);
+//            return "redirect:/login?success";
+//        } else {
+//            return "redirect:/registration/api/oauth2";
+//        }
     }
 
-    @GetMapping("/api/oauth2")
-    public String registrationWithOAuth(@AuthenticationPrincipal OAuth2User oauthUser) {
-        if (oauthUser == null) {
-            return "redirect:/realty";
-        }
-
-        log.info("Role: " + oauthUser.getAuthorities());
-
-        String email = oauthUser.getAttribute("email");
-        if (userService.findByEmail(email).isPresent()) {
-            return "redirect:/realty";
-        }
-
-        User newUser = new User();
-        newUser.setName(oauthUser.getAttribute("name"));
-        newUser.setEmail(email);
-        newUser.setPassword(passwordEncoder.encode("google"));
-
-        userService.registerUser(newUser);
-
-        return "redirect:/realty";
-    }
+//    @GetMapping("/api/oauth2")
+//    public String registrationWithOAuth(@AuthenticationPrincipal OAuth2User oauthUser) {
+//        if (oauthUser == null) {
+//            return "redirect:/realty";
+//        }
+//
+//        log.info("Role: " + oauthUser.getAuthorities());
+//
+//        String email = oauthUser.getAttribute("email");
+//        if (userService.findByEmail(email).isPresent()) {
+//            return "redirect:/realty";
+//        }
+//
+//        User newUser = new User();
+//        newUser.setName(oauthUser.getAttribute("name"));
+//        newUser.setEmail(email);
+//        newUser.setPassword(passwordEncoder.encode("google"));
+//
+//        userService.registerUser(newUser);
+//
+//        return "redirect:/realty";
+//    }
 }
