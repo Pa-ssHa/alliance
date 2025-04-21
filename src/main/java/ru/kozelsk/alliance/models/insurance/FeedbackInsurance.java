@@ -79,7 +79,7 @@ public class FeedbackInsurance implements Feedback {
     }
 
     @Override
-    public int rating() {
+    public int getRating() {
         return rating;
     }
 

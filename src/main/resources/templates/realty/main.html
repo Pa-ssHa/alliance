@@ -334,6 +334,8 @@
     </div>
 </div>
 
+
+
 <!-- Секция объявлений об аренде -->
 <div class="container py-4">
     <h2 class="text-center mb-4">Аренда</h2>
@@ -386,7 +388,10 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div>
-                                <h5 class="card-title mb-0" th:text="${feedback.user.name}">Имя пользователя</h5>
+                                <h6 class="card-title mb-0">
+                                    <span th:if="${feedback.anon}">Анонимный пользователь</span>
+                                    <span th:unless="${feedback.anon}" th:text="${feedback.user.name}">Имя пользователя</span>
+                                </h6>
                                 <small class="text-muted" th:text="${feedback.dateOfPlacement}">Дата</small>
                             </div>
                             <div class="rating ms-auto">
@@ -447,6 +452,22 @@
                             </div>
                             <input type="hidden" id="rating" name="rating" value="0">
                         </div>
+
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type="checkbox" id="isAnon"
+                                   th:field="*{anon}">
+                            <label class="form-check-label" for="isAnon">
+                                Опубликовать анонимно
+                            </label>
+                            <small class="text-muted d-block mt-1">
+                                Ваше имя не будет отображаться в отзыве
+                            </small>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Все отзывы проходят модерацию перед публикацией
+                        </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                             <button type="submit" class="btn btn-primary">Отправить</button>

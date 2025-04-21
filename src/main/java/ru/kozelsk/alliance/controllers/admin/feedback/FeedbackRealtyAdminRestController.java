@@ -14,13 +14,13 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/admin/feedback")
-public class FeedbackAdminRestController {
+@RequestMapping("/admin/feedback-realty")
+public class FeedbackRealtyAdminRestController {
 
     private final FeedbackRealtyService feedbackRealtyService;
 
     @Autowired
-    public FeedbackAdminRestController(FeedbackRealtyService feedbackRealtyService) {
+    public FeedbackRealtyAdminRestController(FeedbackRealtyService feedbackRealtyService) {
         this.feedbackRealtyService = feedbackRealtyService;
     }
 

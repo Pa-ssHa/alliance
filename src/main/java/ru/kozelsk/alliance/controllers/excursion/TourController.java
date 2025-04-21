@@ -18,12 +18,14 @@ import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
 import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
+import ru.kozelsk.alliance.utils.services.UserFromPrincipal;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,13 +38,15 @@ public class TourController {
     private final TourImageService tourImageService;
     private final BookingService bookingService;
     private final CheckAuthorizeService checkAuthorizeService;
+    private final UserFromPrincipal userFromPrincipal;
 
     @Autowired
-    public TourController(TourService tourService, TourImageService tourImageService, BookingService bookingService, CheckAuthorizeService checkAuthorizeService) {
+    public TourController(TourService tourService, TourImageService tourImageService, BookingService bookingService, CheckAuthorizeService checkAuthorizeService, UserFromPrincipal userFromPrincipal) {
         this.tourService = tourService;
         this.tourImageService = tourImageService;
         this.bookingService = bookingService;
         this.checkAuthorizeService = checkAuthorizeService;
+        this.userFromPrincipal = userFromPrincipal;
     }
 
     @GetMapping("/{id}")
@@ -52,15 +56,18 @@ public class TourController {
         model.addAttribute("oneTour", tourService.findOne(id));
 
 
-        if(user != null) {
+        if(principal != null) {
             List<Booking> bookings = bookingService.getBookingForTour(id);
-            Optional<Booking> booking = bookingService.isBookingForUser(bookings, user.getId());
+            Optional<Booking> booking = bookingService.isBookingForUser(bookings, userFromPrincipal.getUserId(principal))
+                    .filter(b -> b.getBookingTime().isAfter(LocalDateTime.now()));
             model.addAttribute("bookings", booking);
         }else {
             model.addAttribute("bookings", Optional.empty());
         }
 
         model.addAttribute("checkAdmin", checkAuthorizeService.checkAdmin(principal));
+
+        model.addAttribute("authenticated", principal!=null);
 
 //        List<Booking> bookings = bookingService.getBookingForTour(id);
 //        model.addAttribute("bookings", bookings);

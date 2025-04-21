@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <!--    CSRF    -->
     <meta name="_csrf" th:content="${_csrf.token}"/>
@@ -219,36 +219,107 @@
     <div class="container">
         <h2 class="text-center mb-4">Отзывы наших клиентов</h2>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" th:each="feedback : ${feedbackInsurance}">
                 <div class="card">
                     <div class="card-body">
-                        <p class="card-text">Отличный сервис! Оформил страховку на машину быстро и без проблем.</p>
-                        <p class="card-text"><small class="text-muted">Иван, 12.10.2023</small></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">Спасибо за помощь в выборе страховки для квартиры. Все четко и понятно.</p>
-                        <p class="card-text"><small class="text-muted">Мария, 05.10.2023</small></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">Очень доволен страховкой жизни. Рекомендую!</p>
-                        <p class="card-text"><small class="text-muted">Алексей, 28.09.2023</small></p>
+                        <div class="d-flex align-items-center mb-3">
+                            <div>
+                                <h6 class="card-title mb-0">
+                                    <span th:if="${feedback.anon}">Анонимный пользователь</span>
+                                    <span th:unless="${feedback.anon}" th:text="${feedback.user.name}">Имя пользователя</span>
+                                </h6>
+                                <small class="text-muted" th:text="${feedback.dateOfPlacement}">Дата</small>
+                            </div>
+                            <div class="rating ms-auto">
+                                <span th:each="star : ${#numbers.sequence(1, 5)}">
+                                    <i th:class="${star <= feedback.rating} ? 'fas fa-star' : 'far fa-star'"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <p class="card-text" th:text="${feedback.text}"></p>
+                        <div class="text-end">
+                            <form th:if="${checkAdmin}" th:action="@{/insurance/feedback/delete/{id}(id=${feedback.id})}" method="post"
+                                  onsubmit="return confirm('Вы уверены, что хотите удалить этого клиента?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="text-center mt-3">
-            <a href="#" class="btn btn-primary">Добавить отзыв</a>
+        <!-- Кнопка для открытия модального окна -->
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <div th:if="${!hasFeedback}" class="text-center mt-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal">Добавить отзыв</button>
+            </div>
+            <div th:if="${hasFeedback}" class="text-center mt-3">
+                <p class="text-success">Вы уже оставили отзыв. Спасибо!</p>
+            </div>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <p class="text-warning">Для возможности оставить отзыв необходимо <a th:href="@{/login}">войти</a> в систему.</p>
         </div>
     </div>
 </section>
+
+<!-- Модальное окно для добавления отзыва -->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel">Новый отзыв</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:method="POST" th:action="@{/insurance/feedback}" th:object="${newFeedbackInsurance}">
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Текст отзыва</label>
+                            <textarea class="form-control" th:field="*{text}" id="text" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Рейтинг</label>
+                            <div class="rating-stars">
+                                <span class="star" data-value="1"><i class="far fa-star"></i></span>
+                                <span class="star" data-value="2"><i class="far fa-star"></i></span>
+                                <span class="star" data-value="3"><i class="far fa-star"></i></span>
+                                <span class="star" data-value="4"><i class="far fa-star"></i></span>
+                                <span class="star" data-value="5"><i class="far fa-star"></i></span>
+                            </div>
+                            <input type="hidden" id="rating" name="rating" value="0">
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type="checkbox" id="isAnon"
+                                   th:field="*{anon}">
+                            <label class="form-check-label" for="isAnon">
+                                Опубликовать анонимно
+                            </label>
+                            <small class="text-muted d-block mt-1">
+                                Ваше имя не будет отображаться в отзыве
+                            </small>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Все отзывы проходят модерацию перед публикацией
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:if="${checkAdmin}" class="text-center mt-3">
+    <form th:method="GET" th:action="@{/admin-panel}">
+        <button type="submit" class="btn btn-success">Перейти в панель администратора</button>
+    </form>
+</div>
 
 <!-- Футер -->
 <footer>
@@ -269,6 +340,62 @@
     AOS.init({
         duration: 1000,
         once: true,
+    });
+
+    // реагирование звездочек на клики
+    document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('.rating-stars .star');
+        const ratingInput = document.getElementById('rating');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                const value = this.getAttribute('data-value');
+                ratingInput.value = value;
+
+                // Обновляем иконки звезд
+                stars.forEach((s, index) => {
+                    const icon = s.querySelector('i');
+                    if (index < value) {
+                        icon.classList.remove('far'); // Убираем пустую звезду
+                        icon.classList.add('fas');   // Добавляем заполненную звезду
+                    } else {
+                        icon.classList.remove('fas'); // Убираем заполненную звезду
+                        icon.classList.add('far');    // Добавляем пустую звезду
+                    }
+                });
+            });
+
+            star.addEventListener('mouseover', function () {
+                const value = this.getAttribute('data-value');
+
+                // Подсвечиваем звезды при наведении
+                stars.forEach((s, index) => {
+                    const icon = s.querySelector('i');
+                    if (index < value) {
+                        icon.classList.remove('far'); // Убираем пустую звезду
+                        icon.classList.add('fas');   // Добавляем заполненную звезду
+                    } else {
+                        icon.classList.remove('fas'); // Убираем заполненную звезду
+                        icon.classList.add('far');    // Добавляем пустую звезду
+                    }
+                });
+            });
+
+            star.addEventListener('mouseout', function () {
+                // Восстанавливаем состояние звезд после ухода мыши
+                const currentRating = ratingInput.value;
+                stars.forEach((s, index) => {
+                    const icon = s.querySelector('i');
+                    if (index < currentRating) {
+                        icon.classList.remove('far'); // Убираем пустую звезду
+                        icon.classList.add('fas');   // Добавляем заполненную звезду
+                    } else {
+                        icon.classList.remove('fas'); // Убираем заполненную звезду
+                        icon.classList.add('far');    // Добавляем пустую звезду
+                    }
+                });
+            });
+        });
     });
 </script>
 </body>

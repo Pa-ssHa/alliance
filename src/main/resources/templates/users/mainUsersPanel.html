@@ -20,6 +20,7 @@
     <tr>
         <th>Имя</th>
         <th>Телефон</th>
+        <th>email</th>
         <th>Действия</th>
     </tr>
     </thead>
@@ -27,6 +28,7 @@
     <tr th:each="user : ${users}">
         <td th:text="${user.name}"></td>
         <td th:text="${user.phone}"></td>
+        <td th:text="${user.email}"></td>
         <td>
 <!--            <a th:href="@{/realty/admin/client/edit/{id}(id=${user.id})}" class="btn btn-warning">Редактировать</a>-->
 

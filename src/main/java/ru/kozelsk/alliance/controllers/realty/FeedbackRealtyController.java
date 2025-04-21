@@ -45,12 +45,14 @@ public class FeedbackRealtyController {
         if (user == null) {
             return "redirect:/realty";
         }
+
         user.setRealtyFeedback(true);
         myUserDetailsService.save(user);
 
         feedbackRealty.setUser(user);
         // записываем текущее время
         feedbackRealty.setDateOfPlacement(new Date());
+        feedbackRealty.setActive(false);
         feedbackRealtyService.save(feedbackRealty);
 
         return "redirect:/realty";

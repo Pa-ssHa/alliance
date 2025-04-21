@@ -67,21 +67,39 @@
             На данный тур пока нет бронирований.
         </div>
         <div th:unless="${bookings.isEmpty()}">
-            <h4>Занятые временные слоты:</h4>
+            <h4>Время, на которое у вас забронирована экскурсия:</h4>
             <ul class="list-group mb-4">
                 <li class="list-group-item">
                     <span th:text="${#temporals.format(bookings.get().bookingTime, 'dd.MM.yyyy HH:mm')}"></span>
                 </li>
             </ul>
+            <ul class="list-group mb-4">
+                <li class="list-group-item">
+                    <div th:if="${bookings.get().active}" class="alert alert-info mb-4">
+                        Бронирование подтверждено
+                    </div>
+                    <div th:unless="${bookings.get().active}" class="alert alert-info mb-4">
+                        Бронирование на рассмотрении
+                    </div>
+                </li>
+            </ul>
         </div>
 
         <!-- Кнопка "Забронировать" -->
-        <div sec:authorize="isAuthenticated()" >
+        <!--<div sec:authorize="isAuthenticated()" >
             <div th:if="${bookings.isEmpty()}">
                 <a th:href="@{/excursion/booking/{id}(id=${oneTour.id})}" class="btn btn-primary mb-4">Забронировать</a>
             </div>
         </div>
         <div sec:authorize="!isAuthenticated()">
+            <p class="text-warning">Для бронирования необходимо <a th:href="@{/login}">войти</a> в систему.</p>
+        </div>-->
+        <div th:if="${authenticated}" >
+            <div th:if="${bookings.isEmpty()}">
+                <a th:href="@{/excursion/booking/{id}(id=${oneTour.id})}" class="btn btn-primary mb-4">Забронировать</a>
+            </div>
+        </div>
+        <div th:if="${!authenticated}">
             <p class="text-warning">Для бронирования необходимо <a th:href="@{/login}">войти</a> в систему.</p>
         </div>
 

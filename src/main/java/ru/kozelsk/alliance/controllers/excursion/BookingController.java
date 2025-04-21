@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.excursion.Tour;
+import ru.kozelsk.alliance.models.excursion.booking.Booking;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.excursion.TourService;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
@@ -16,6 +17,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/excursion/booking")
 @Controller
@@ -57,6 +59,7 @@ public class BookingController {
     @PostMapping("/{tourId}")
     public String bookTour(@PathVariable int tourId,
                            @RequestParam LocalDateTime bookingTime,
+                           @RequestParam(value = "phoneNumber") String phoneNumber,
                            Principal principal,
                            Model model) {
         Tour tour = tourService.findOne(tourId);
@@ -68,9 +71,18 @@ public class BookingController {
             return "excursion/booking/form";
         }
 
+        List<Booking> bookings = bookingService.getBookingForTour(tourId);
+        Optional<Booking> booking = bookingService.isBookingForUser(bookings, userFromPrincipal.getUserId(principal))
+                .filter(b -> b.getBookingTime().isAfter(LocalDateTime.now()));
+        if (booking.isPresent()) {
+            model.addAttribute("error", "у вас есть не истекшее бронирование");
+        }
+
         // проверка наличия свободного времени
         if(bookingService.isTimeSlotAvailable(bookingTime)) {
-            bookingService.createBooking(tour, userFromPrincipal.getUser(principal), bookingTime);
+            User user = userFromPrincipal.getUser(principal);
+            user.setPhone(phoneNumber);
+            bookingService.createBooking(tour, user, bookingTime);
             return "redirect:/excursion/tour/" + tourId;
         } else {
             model.addAttribute("error", "Выбранное время уже занято");

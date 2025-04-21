@@ -27,6 +27,7 @@
             </tr>
             </thead>
             <tbody>
+<!--            недвижимость-->
             <tr th:each="feedback : ${feedbacksRealty}">
                 <td th:text="${feedback.text}"></td>
                 <td th:text="${feedback.user.username}"></td>
@@ -37,7 +38,41 @@
                 </td>
                 <td>
                     <button th:data-id="${feedback.id}"
-                            class="btn btn-sm toggle-active-btn"
+                            class="btn btn-sm toggle-active-btn-realty"
+                            th:classappend="${feedback.active} ? 'btn-warning' : 'btn-success'"
+                            th:text="${feedback.active} ? 'Снять с публикации' : 'Опубликовать'">
+                    </button>
+                </td>
+            </tr>
+<!--           экскурсии -->
+            <tr th:each="feedback : ${feedbacksExcursion}">
+                <td th:text="${feedback.text}"></td>
+                <td th:text="${feedback.user.username}"></td>
+                <td th:text="${feedback.user.phone}"></td>
+                <td>
+                    <span th:if="${feedback.active}" class="badge bg-success">Опубликован</span>
+                    <span th:unless="${feedback.active}" class="badge bg-warning text-dark">На модерации</span>
+                </td>
+                <td>
+                    <button th:data-id="${feedback.id}"
+                            class="btn btn-sm toggle-active-btn-excursion"
+                            th:classappend="${feedback.active} ? 'btn-warning' : 'btn-success'"
+                            th:text="${feedback.active} ? 'Снять с публикации' : 'Опубликовать'">
+                    </button>
+                </td>
+            </tr>
+<!--            страховка-->
+            <tr th:each="feedback : ${feedbacksInsurance}">
+                <td th:text="${feedback.text}"></td>
+                <td th:text="${feedback.user.username}"></td>
+                <td th:text="${feedback.user.phone}"></td>
+                <td>
+                    <span th:if="${feedback.active}" class="badge bg-success">Опубликован</span>
+                    <span th:unless="${feedback.active}" class="badge bg-warning text-dark">На модерации</span>
+                </td>
+                <td>
+                    <button th:data-id="${feedback.id}"
+                            class="btn btn-sm toggle-active-btn-insurance"
                             th:classappend="${feedback.active} ? 'btn-warning' : 'btn-success'"
                             th:text="${feedback.active} ? 'Снять с публикации' : 'Опубликовать'">
                     </button>
@@ -57,12 +92,66 @@
         const headerName = document.querySelector('meta[name="_csrf_header"]').content;
 
         // Обработчики для всех кнопок
-        document.querySelectorAll('.toggle-active-btn').forEach(btn => {
+        document.querySelectorAll('.toggle-active-btn-realty').forEach(btn => {
             btn.addEventListener('click', function() {
                 const feedbackId = this.getAttribute('data-id');
                 console.log("Button clicked for feedback ID:", feedbackId);
 
-                fetch(`/admin/feedback/${feedbackId}/changeActive`, {
+                fetch(`/admin/feedback-realty/${feedbackId}/changeActive`, {
+                    method: 'POST',
+                    headers: {
+                        [headerName]: token,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        console.log("Success, reloading page");
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert('Ошибка: ' + error.message);
+                    });
+            });
+        })
+
+        document.querySelectorAll('.toggle-active-btn-excursion').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feedbackId = this.getAttribute('data-id');
+                console.log("Button clicked for feedback ID:", feedbackId);
+
+                fetch(`/admin/feedback-excursion/${feedbackId}/changeActive`, {
+                    method: 'POST',
+                    headers: {
+                        [headerName]: token,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        console.log("Success, reloading page");
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert('Ошибка: ' + error.message);
+                    });
+            });
+        })
+
+        document.querySelectorAll('.toggle-active-btn-insurance').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feedbackId = this.getAttribute('data-id');
+                console.log("Button clicked for feedback ID:", feedbackId);
+
+                fetch(`/admin/feedback-insurance/${feedbackId}/changeActive`, {
                     method: 'POST',
                     headers: {
                         [headerName]: token,

@@ -42,4 +42,25 @@ public class UserFromPrincipal {
         }
         return myUserDetailsService.findByEmail(email).get();
     }
+
+    public Integer getUserId(Principal principal) {
+
+        if(principal==null){
+            return null;
+        }
+
+        String email = null;
+        if (principal instanceof OAuth2AuthenticationToken) {
+            OAuth2User oauth2User = ((OAuth2AuthenticationToken) principal).getPrincipal();
+            email = oauth2User.getAttribute("email");
+        }
+        // Для обычной аутентификации
+        else {
+            email = principal.getName();
+        }
+        if(email==null){
+            return null;
+        }
+        return myUserDetailsService.findByEmail(email).get().getId();
+    }
 }

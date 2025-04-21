@@ -42,7 +42,6 @@ public class FeedbackRealty implements Feedback {
         this.isAnon = isAnon;
     }
 
-
     @Override
     public String toString() {
         return "Feedback{" +
@@ -93,7 +92,7 @@ public class FeedbackRealty implements Feedback {
     }
 
     @Override
-    public int rating() {
+    public int getRating() {
         return rating;
     }
 

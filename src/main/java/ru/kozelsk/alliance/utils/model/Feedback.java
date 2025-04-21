@@ -14,7 +14,7 @@ public interface Feedback {
     void setDateOfPlacement(Date dateOfPlacement);
     User getUser();
     void setUser(User user);
-    int rating();
+    int getRating();
     void setRating(int rating);
     boolean isAnon();
     void setAnon(boolean active);

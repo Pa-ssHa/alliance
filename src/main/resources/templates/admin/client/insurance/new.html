@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <meta charset="UTF-8">
+  <title>Новый клиент</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+
+<div th:replace="navbar.html"></div>
+
+<h1>Новый клиент</h1>
+
+<form th:method="POST" th:action="@{/admin/client-insurance}" th:object="${newClient}">
+  <div class="mb-3">
+    <label for="name" class="form-label">Имя</label>
+    <input type="text" th:field="*{name}" id="name" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label for="phone" class="form-label">Телефон</label>
+    <div class="input-group">
+      <span class="input-group-text">+7</span>
+      <input type="text" th:field="*{phone}" id="phone" class="form-control" placeholder="Введите номер телефона"
+             maxlength="10" pattern="\d{10}" required>
+    </div>
+    <small class="form-text text-muted">Введите номера телефона без +7.</small>
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Описание (необязательно)</label>
+    <textarea th:field="*{description}" id="description" class="form-control"></textarea>
+  </div>
+  <div>
+    <input type="submit" value="Создать" class="btn btn-primary">
+  </div>
+</form>
+
+<form th:method="GET" th:action="@{/admin/client-insurance}">
+  <input type="submit" value="Вернуться к списку клиентов" class="btn btn-secondary">
+</form>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function (event) {
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput.value && !phoneInput.value.startsWith('+7')) {
+      phoneInput.value = '+7' + phoneInput.value;
+    }
+  });
+
+    document.getElementById('phone').addEventListener('input', function(event) {
+    this.value = this.value.replace(/\D/g, ''); // Удаляем всё, кроме цифр
+    if (this.value.length > 10) {
+    this.value = this.value.slice(0, 10); // Ограничиваем до 10 цифр
+  }
+  });
+
+</script>
+
+</body>
+</html>

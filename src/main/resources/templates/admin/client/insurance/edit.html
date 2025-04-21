@@ -14,7 +14,7 @@
 
 <h1>Редактирование клиента</h1>
 
-<form th:method="POST" th:action="@{/templates/admin/client/{id}(id=${upClient.id})}" th:object="${upClient}">
+<form th:method="POST" th:action="@{/admin/client-insurance/{id}(id=${upClient.id})}" th:object="${upClient}">
     <div class="mb-3">
         <label for="name" class="form-label">Имя</label>
         <input type="text" th:field="*{name}" id="name" class="form-control" required>
@@ -37,7 +37,7 @@
     </div>
 </form>
 
-<form th:method="GET" th:action="@{/templates/admin/client}">
+<form th:method="GET" th:action="@{/admin/client-insurance}">
     <input type="submit" value="Вернуться к списку клиентов" class="btn btn-secondary">
 </form>
 

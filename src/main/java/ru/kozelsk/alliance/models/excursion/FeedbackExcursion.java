@@ -1,11 +1,111 @@
 package ru.kozelsk.alliance.models.excursion;
 
+import jakarta.persistence.*;
+import ru.kozelsk.alliance.models.users.User;
+import ru.kozelsk.alliance.utils.model.Feedback;
+
 import javax.xml.crypto.Data;
+import java.util.Date;
 
-public class FeedbackExcursion {
+@Entity
+@Table(name = "feedback_excursion")
+public class FeedbackExcursion implements Feedback {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String text;
-    private Data dateOfPlacement;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateOfPlacement;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    private int rating;
+    private boolean isAnon;
+    private boolean isActive;
+
+    public FeedbackExcursion() {}
+
+    public FeedbackExcursion(String text, Date dateOfPlacement, User user, int rating,
+                             boolean isAnon, boolean isActive) {
+        this.text = text;
+        this.dateOfPlacement = dateOfPlacement;
+        this.user = user;
+        this.rating = rating;
+        this.isAnon = isAnon;
+        this.isActive = isActive;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public Date getDateOfPlacement() {
+        return dateOfPlacement;
+    }
+
+    @Override
+    public void setDateOfPlacement(Date dateOfPlacement) {
+        this.dateOfPlacement = dateOfPlacement;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    @Override
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    @Override
+    public boolean isAnon() {
+        return isAnon;
+    }
+
+    @Override
+    public void setAnon(boolean anon) {
+        isAnon = anon;
+    }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
