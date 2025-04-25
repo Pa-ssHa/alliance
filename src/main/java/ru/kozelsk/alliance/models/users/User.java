@@ -51,6 +51,7 @@ public class User implements UserDetails {
     private boolean isRealtyFeedback;
     private boolean isExcursionFeedback;
     private boolean isInsuranceFeedback;
+    private boolean isCourseworkFeedback;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> bookings;
@@ -138,6 +139,14 @@ public class User implements UserDetails {
 
     public void setInsuranceFeedback(boolean insuranceFeedback) {
         isInsuranceFeedback = insuranceFeedback;
+    }
+
+    public boolean isCourseworkFeedback() {
+        return isCourseworkFeedback;
+    }
+
+    public void setCourseworkFeedback(boolean courseworkFeedback) {
+        isCourseworkFeedback = courseworkFeedback;
     }
 
     public List<FeedbackInsurance> getFeedbackInsurances() {

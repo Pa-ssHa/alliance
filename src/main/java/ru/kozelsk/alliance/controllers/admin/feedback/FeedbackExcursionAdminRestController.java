@@ -6,30 +6,32 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.kozelsk.alliance.services.insurance.FeedbackInsuranceService;
+import ru.kozelsk.alliance.services.excursion.FeedbackExcursionService;
 import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 
 @IsAdmin
 @RestController
-@RequestMapping("admin/feedback-insurance")
-public class FeedbackInsuranceRestController {
+@RequestMapping("/admin/feedback-excursion")
+public class FeedbackExcursionAdminRestController {
 
-    private final FeedbackInsuranceService feedbackInsuranceService;
+    private final FeedbackExcursionService feedbackExcursionService;
 
     @Autowired
-    public FeedbackInsuranceRestController(FeedbackInsuranceService feedbackInsuranceService) {
-        this.feedbackInsuranceService = feedbackInsuranceService;
+    public FeedbackExcursionAdminRestController(FeedbackExcursionService feedbackExcursionService) {
+        this.feedbackExcursionService = feedbackExcursionService;
     }
 
     @PostMapping("/{id}/changeActive")
     public ResponseEntity<?> changeActive(@PathVariable int id){
 
-        return feedbackInsuranceService.findOne(id)
-                .map(feedbackInsurance -> {
-                    feedbackInsurance.setActive(!feedbackInsurance.isActive());
-                    feedbackInsuranceService.save(feedbackInsurance);
+        return feedbackExcursionService.findOne(id)
+                .map(feedbackExcursion -> {
+                    feedbackExcursion.setActive(!feedbackExcursion.isActive());
+                    feedbackExcursionService.save(feedbackExcursion);
                     return ResponseEntity.ok().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+
 }

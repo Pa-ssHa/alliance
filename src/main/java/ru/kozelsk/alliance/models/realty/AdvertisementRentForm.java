@@ -8,12 +8,12 @@ public class AdvertisementRentForm {
 
     private String title;
     private String description;
-    private double price;
+    private int price;
     private List<MultipartFile> images;
 
     public AdvertisementRentForm() {}
 
-    public AdvertisementRentForm(String title, String description, double price, List<MultipartFile> images) {
+    public AdvertisementRentForm(String title, String description, int price, List<MultipartFile> images) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -36,11 +36,11 @@ public class AdvertisementRentForm {
         this.description = description;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

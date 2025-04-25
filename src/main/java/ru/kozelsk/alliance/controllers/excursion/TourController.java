@@ -161,7 +161,7 @@ public class TourController {
                 }
             }
         }
-        return "redirect:/excursion/tour/edit/" + id;
+        return "redirect:/excursion/tour/" + id;
     }
 
     //// замена фото

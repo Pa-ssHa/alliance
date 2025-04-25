@@ -9,7 +9,6 @@ import ru.kozelsk.alliance.services.excursion.booking.BookingService;
 import ru.kozelsk.alliance.services.excursion.booking.UnavailablePeriodService;
 import ru.kozelsk.alliance.utils.annotations.IsAdmin;
 
-import javax.swing.text.html.parser.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,13 +17,13 @@ import java.util.Optional;
 @IsAdmin
 @RestController
 @RequestMapping("/admin/booking")
-public class BookingAdminRestController {
+public class BookingTourAdminRestController {
 
     private final BookingService bookingService;
     private final UnavailablePeriodService unavailablePeriodService;
 
     @Autowired
-    public BookingAdminRestController(BookingService bookingService, UnavailablePeriodService unavailablePeriodService) {
+    public BookingTourAdminRestController(BookingService bookingService, UnavailablePeriodService unavailablePeriodService) {
         this.bookingService = bookingService;
         this.unavailablePeriodService = unavailablePeriodService;
     }

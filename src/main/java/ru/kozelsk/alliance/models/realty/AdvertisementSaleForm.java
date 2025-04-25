@@ -6,11 +6,11 @@ public class AdvertisementSaleForm {
 
     private String title;
     private String description;
-    private Double price;
+    private int price;
     private MultipartFile[] images;
 
     public AdvertisementSaleForm(String title, String description,
-                                 double price, MultipartFile[] images) {
+                                 int price, MultipartFile[] images) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -36,11 +36,11 @@ public class AdvertisementSaleForm {
         this.description = description;
     }
 
-    public Double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

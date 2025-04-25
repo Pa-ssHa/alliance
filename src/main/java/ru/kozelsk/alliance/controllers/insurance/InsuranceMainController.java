@@ -12,6 +12,7 @@ import ru.kozelsk.alliance.models.insurance.FeedbackInsurance;
 import ru.kozelsk.alliance.models.realty.FeedbackRealty;
 import ru.kozelsk.alliance.models.users.User;
 import ru.kozelsk.alliance.services.insurance.FeedbackInsuranceService;
+import ru.kozelsk.alliance.services.insurance.InsuranceService;
 import ru.kozelsk.alliance.services.realty.FeedbackRealtyService;
 import ru.kozelsk.alliance.services.users.MyUserDetailsService;
 import ru.kozelsk.alliance.utils.services.CheckAuthorizeService;
@@ -26,18 +27,21 @@ public class InsuranceMainController {
     private final CheckAuthorizeService checkAuthorizeService;
     private final MyUserDetailsService myUserDetailsService;
     private final FeedbackInsuranceService feedbackInsuranceService;
+    private final InsuranceService insuranceService;
 
     @Autowired
-    public InsuranceMainController(CheckAuthorizeService checkAuthorizeService, MyUserDetailsService myUserDetailsService, FeedbackInsuranceService feedbackInsuranceService) {
+    public InsuranceMainController(CheckAuthorizeService checkAuthorizeService, MyUserDetailsService myUserDetailsService, FeedbackInsuranceService feedbackInsuranceService, InsuranceService insuranceService) {
         this.checkAuthorizeService = checkAuthorizeService;
         this.myUserDetailsService = myUserDetailsService;
         this.feedbackInsuranceService = feedbackInsuranceService;
+        this.insuranceService = insuranceService;
     }
 
     @GetMapping()
     public String allInsurance(Model model, @AuthenticationPrincipal OAuth2User oAuth2User, Principal principal) {
 
         model.addAttribute("feedbackInsurance", feedbackInsuranceService.findAll().stream().filter(FeedbackInsurance::isActive));
+        model.addAttribute("allInsurance", insuranceService.findAll());
 
         if(oAuth2User != null) {
             Optional<User> user = myUserDetailsService.findByEmail(oAuth2User.getAttribute("email"));
@@ -52,6 +56,8 @@ public class InsuranceMainController {
 
         return "insurance/main";
     }
+
+
 
 
 }

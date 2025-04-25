@@ -2,7 +2,6 @@ package ru.kozelsk.alliance.models.realty;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,14 +20,14 @@ public class AdvertisementSale {
     private String description;
 
     @Column(name = "price")
-    private double price;
+    private int price;
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AdvertisementSaleImage> images;
 
     public AdvertisementSale() {}
 
-    public AdvertisementSale(String title, String description, double price) {
+    public AdvertisementSale(String title, String description, int price) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -58,11 +57,11 @@ public class AdvertisementSale {
         this.description = description;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

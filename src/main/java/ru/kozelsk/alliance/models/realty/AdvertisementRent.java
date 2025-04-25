@@ -20,14 +20,14 @@ public class AdvertisementRent {
     private String description;
 
     @Column(name = "price")
-    private double price;
+    private int price;
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AdvertisementRentImage> images;
 
     public AdvertisementRent() {}
 
-    public AdvertisementRent(String title, String description, double price) {
+    public AdvertisementRent(String title, String description, int price) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -57,11 +57,11 @@ public class AdvertisementRent {
         this.description = description;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kozelsk.alliance.models.excursion.booking.Booking;
-import ru.kozelsk.alliance.models.excursion.booking.UnavailablePeriod;
 import ru.kozelsk.alliance.services.excursion.booking.BookingService;
 import ru.kozelsk.alliance.services.excursion.booking.UnavailablePeriodService;
 import ru.kozelsk.alliance.utils.annotations.IsAdmin;
@@ -16,18 +15,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @IsAdmin
 @Controller
 @RequestMapping("/admin/booking")
-public class BookingAdminController {
+public class BookingTourAdminController {
 
     private final BookingService bookingService;
     private final UnavailablePeriodService unavailablePeriodService;
 
     @Autowired
-    public BookingAdminController(BookingService bookingService, UnavailablePeriodService unavailablePeriodService) {
+    public BookingTourAdminController(BookingService bookingService, UnavailablePeriodService unavailablePeriodService) {
         this.bookingService = bookingService;
         this.unavailablePeriodService = unavailablePeriodService;
     }
